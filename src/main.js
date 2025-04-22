@@ -4,6 +4,7 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import TWEEN from "@tweenjs/tween.js";
+import { setupPopupTabs } from './ui/popupTabs.js';
 
 // --- Základné nastavenia ---
 const canvas = document.querySelector("#webgl-canvas");
@@ -33,7 +34,7 @@ const closePopupButton = document.getElementById("close-popup-button");
 // --- Kamera ---
 const sizes = { width: window.innerWidth, height: window.innerHeight };
 const camera = new THREE.PerspectiveCamera(
-  80,
+  75,
   sizes.width / sizes.height,
   0.1,
   1000
@@ -62,14 +63,14 @@ const colorPalette = {
 
 // --- Mapovanie názvov ---
 const customPartDisplayNames = {
-  Cube01: "Kocka 1",
-  Cube02: "Kocka 2",
-  Cube03: "Kocka 3",
-  Cube04: "Kocka 4",
-  Cube06: "Kocka 6",
-  Cube07: "Kocka 7",
-  Cube08: "Kocka 8",
-  Cube09: "Kocka 9",
+  Cube01: "Cube 1",
+  Cube02: "Cube 2",
+  Cube03: "Cube 3",
+  Cube04: "Cube 4",
+  Cube06: "Cube 6",
+  Cube07: "Cube 7",
+  Cube08: "Cube 8",
+  Cube09: "Cube 9",
 };
 
 // --- Mapovanie prostredí ---
@@ -102,13 +103,13 @@ function updateCombinedProgress() {
   const combined = modelProgress * modelWeight + hdriProgress * hdriWeight;
   const percentage = Math.min(Math.round(combined * 100), 100);
   if (progressBar) progressBar.style.width = `${percentage}%`;
-  if (progressText) progressText.textContent = `Načítavam ${percentage}%`;
+  if (progressText) progressText.textContent = `Loading scene ${percentage}%`;
 }
 function checkLoadingComplete(forceHide = false) {
   if (loadingOverlay && (forceHide || (isModelLoaded && isHdriLoaded))) {
     console.log("Načítavanie dokončené.");
     if (progressBar) progressBar.style.width = "100%";
-    if (progressText) progressText.textContent = `Načítavam 100%`;
+    if (progressText) progressText.textContent = `Ready 100%`;
     setTimeout(() => {
       loadingOverlay.classList.add("hidden");
     }, 150);
@@ -120,7 +121,6 @@ function applyGlassMaterial(targetModel, envMap) {
   if (!targetModel) return;
   targetModel.traverse((child) => {
     if (child.isMesh) {
-      // child.castShadow = true; // ODSTRÁNENÉ
       const currentMaterialColor =
         child.material && child.material.color
           ? child.material.color.clone()
@@ -239,8 +239,26 @@ const ambientLight = new THREE.AmbientLight(0xffd63a, 1.5);
 scene.add(ambientLight);
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(5, 10, 7); // Stále dôležité pre smer svetla
+
+directionalLight.castShadow = true;
+
+
+// === PRIDAŤ/UPRAVIŤ TOTO: Konfigurácia mapy tieňa (voliteľné, ale odporúčané) ===
+directionalLight.shadow.mapSize.width = 1024; // Rozlíšenie mapy tieňa (vyššie = ostrejšie, náročnejšie)
+directionalLight.shadow.mapSize.height = 1024;
+directionalLight.shadow.camera.near = 0.5;    // Ako blízko kamery svetla začínajú tiene
+directionalLight.shadow.camera.far = 50;     // Ako ďaleko končia
+// Nastavenie rozsahu "kamery" svetla (orthographic pre DirectionalLight)
+directionalLight.shadow.camera.left = -10;
+directionalLight.shadow.camera.right = 10;
+directionalLight.shadow.camera.top = 10;
+directionalLight.shadow.camera.bottom = -10;
+// directionalLight.shadow.bias = -0.001; // Pomáha predchádzať "shadow acne" (artefakty) - experimentujte
+// === KONIEC PRIDANIA/ÚPRAVY ===
+
+
 scene.add(directionalLight);
-const pointLight = new THREE.PointLight(0xffffff, 1.0, 100);
+const pointLight = new THREE.PointLight(0xffffff, 0.8, 100);
 pointLight.position.set(-3, 4, 4);
 scene.add(pointLight);
 
@@ -252,6 +270,9 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.0;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
 // === LOGIKA PRE HLASOVÉ OVLÁDANIE ===
 const SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -260,18 +281,17 @@ let isListening = false;
 const BACKEND_URL = "/api/process-voice";
 if (SpeechRecognition) {
   recognition = new SpeechRecognition();
-  //recognition.lang = "sk-SK";
   recognition.continuous = false;
   recognition.interimResults = false;
   recognition.onresult = async (event) => {
     const transcript = event.results[0][0].transcript.trim();
     const currentLang = recognition.lang || languageSelector?.value || "sk-SK";
-    console.log(`Rozpoznaný text (${currentLang}):`, transcript);
+    console.log(`Recognized text (${currentLang}):`, transcript);
     if (transcript) {
-      console.log("Rozpoznaný text:", transcript);
+      console.log("Recognized text:", transcript);
       if (transcriptOutput)
-        transcriptOutput.textContent = `Rozpoznaný text: ${transcript}`;
-      if (micStatus) micStatus.textContent = "Spracovávam...";
+        transcriptOutput.textContent = `Recognized text: ${transcript}`;
+      if (micStatus) micStatus.textContent = "Processing...";
       try {
         const response = await fetch(BACKEND_URL, {
           method: "POST",
@@ -294,7 +314,7 @@ if (SpeechRecognition) {
         console.error("Chyba komunikácie s backendom:", error);
         if (micStatus) micStatus.textContent = `Chyba backendu`;
         setTimeout(() => {
-          if (!isListening && micStatus) micStatus.textContent = "Pripravený";
+          if (!isListening && micStatus) micStatus.textContent = "Ready";
         }, 2000);
       }
     }
@@ -374,7 +394,6 @@ const voiceColorPalette = {
   žltá: "#ffc107",
   tyrkysová: "#20c997",
   biela: "#ffffff",
-  červená: "#ff0000",
   blue: "#007bff",
   orange: "#fd7e14",
   purple: "#6f42c1",
@@ -383,7 +402,6 @@ const voiceColorPalette = {
   yellow: "#ffc107",
   teal: "#20c997",
   white: "#ffffff",
-  red: "#ff0000",
 };
 
 // Funkcia na vykonanie príkazu z AI (s automatickým výberom UI a normalizáciou cieľa)
@@ -515,7 +533,7 @@ function executeCommandFromAI(commandData) {
       break;
     case "unknown":
       console.warn(`Backend nerozpoznal príkaz.`);
-      if (micStatus) micStatus.textContent = "Nerozumiem príkazu";
+      if (micStatus) micStatus.textContent = "I don't understand";
       // Status sa resetne v onend
       break;
     default:
@@ -759,9 +777,9 @@ function displaySelectedCubeUI(partName) {
   const mesh = modelParts[partName];
   if (!mesh || !mesh.material) {
     selectedCubeColorsContainer.innerHTML =
-      '<p class="placeholder-text">Vyberte časť</p>';
+      '<p class="placeholder-text">Select Cube</p>';
     selectedCubeTransformsContainer.innerHTML =
-      '<p class="placeholder-text">Vyberte časť</p>';
+      '<p class="placeholder-text">Select Cube</p>';
     currentlySelectedMesh = null;
     return;
   }
@@ -783,19 +801,19 @@ function displaySelectedCubeUI(partName) {
   sliderColumn.className = "slider-controls-column";
   const buttonColumn = document.createElement("div");
   buttonColumn.className = "reset-buttons-column";
-  let slidersHtml = `<div class="control-title">Rotácia</div><div class="slider-container">`;
+  let slidersHtml = `<div class="control-title">Rotate:</div><div class="slider-container">`;
   ["x", "y"].forEach((axis) => {
     const rotValue = THREE.MathUtils.radToDeg(mesh.rotation[axis]).toFixed(0);
     slidersHtml += `<div class="slider-row"><label>Rot ${axis.toUpperCase()}:</label><input type="range" min="-180" max="180" step="1" value="${rotValue}" data-part-name="${partName}" data-axis="${axis}"><span class="value-display">${rotValue}</span></div>`;
   });
   slidersHtml += `</div>`;
-  slidersHtml += `<div class="control-title">Mierka</div><div class="slider-container">`;
+  slidersHtml += `<div class="control-title">Scale:</div><div class="slider-container">`;
   const scaleValue = mesh.scale.z.toFixed(2);
-  slidersHtml += `<div class="slider-row"><label>Mierka Z:</label><input type="range" min="0.1" max="3.0" step="0.05" value="${scaleValue}" data-part-name="${partName}" data-axis="scaleZ"><span class="value-display">${scaleValue}</span></div>`;
+  slidersHtml += `<div class="slider-row"><label>Scale Z:</label><input type="range" min="0.1" max="3.0" step="0.05" value="${scaleValue}" data-part-name="${partName}" data-axis="scaleZ"><span class="value-display">${scaleValue}</span></div>`;
   slidersHtml += `</div>`;
   sliderColumn.innerHTML = slidersHtml;
-  let buttonsHtml = `<button class="rotation-reset-button" data-part-name="${partName}">Reset Rotácie</button>`;
-  buttonsHtml += `<button class="scale-reset-button" data-part-name="${partName}">Reset Mierky</button>`;
+  let buttonsHtml = `<button class="rotation-reset-button" data-part-name="${partName}">Reset Rotate</button>`;
+  buttonsHtml += `<button class="scale-reset-button" data-part-name="${partName}">Reset Scale</button>`;
   buttonColumn.innerHTML = buttonsHtml;
   selectedCubeTransformsContainer.appendChild(sliderColumn);
   selectedCubeTransformsContainer.appendChild(buttonColumn);
@@ -894,49 +912,94 @@ function populateCubeSelectorAndSetupUI() {
   }
 }
 
-// --- Načítanie GLB modelu ---
+// --- Načítanie GLB modelu (s nastavením tieňov a normalizáciou názvov) ---
 const loader = new GLTFLoader();
-const modelPath = "models/glass-voice-4.glb";
+// Použijeme cestu pre Vite (súbor je v public/models/)
+const modelPath = "/models/glass-voice-4.glb";
 loader.load(
   modelPath,
   (gltf) => {
     console.log("Model úspešne načítaný.");
     model = gltf.scene;
-    modelParts = {};
+    modelParts = {}; // Reset
     initialRotations = {};
     initialScales = {};
-    model.rotation.x = THREE.MathUtils.degToRad(0);
-    model.rotation.y = THREE.MathUtils.degToRad(30);
-    model.rotation.z = THREE.MathUtils.degToRad(0);
+
+    // Pôvodné nastavenie rotácie modelu (môžete ponechať alebo odstrániť)
+    // model.rotation.x = THREE.MathUtils.degToRad(0);
+    // model.rotation.y = THREE.MathUtils.degToRad(30);
+    // model.rotation.z = THREE.MathUtils.degToRad(0);
+
+    // Prejdeme model, nastavíme tiene, normalizujeme názvy a uložíme referencie
     model.traverse((child) => {
-      if (child.isMesh && child.name.startsWith("Cube")) {
-        if (child.material) {
-          child.material = child.material.clone();
-        } else {
-          child.material = new THREE.MeshStandardMaterial({
-            color: defaultPartColor.clone(),
-          });
-        }
-        modelParts[child.name] = child;
-        initialRotations[child.name] = child.rotation.clone();
-        initialScales[child.name] = child.scale.clone();
+      if (child.isMesh) { // Aplikujeme na všetky meshe v modeli
+          // === POVILENIE VRHANIA TIEŇA ===
+          child.castShadow = true;
+          // === KONIEC ===
+
+          // Ak chceme, aby aj kocka prijímala tiene (napr. od iných častí samej seba)
+          // child.receiveShadow = true;
+
+          // Spracovanie len pre kocky (CubeXX)
+          if (child.name.startsWith("Cube")) {
+              const originalName = child.name; // Napr. "Cube4" alebo "Cube04"
+
+              // --- Normalizácia názvu na Cube0X ---
+              const match = originalName.match(/^Cube(\d+)$/i); // Nájde číslo
+              let normalizedName = originalName; // Defaultne ponechá pôvodný
+              if (match && match[1]) {
+                  const number = parseInt(match[1], 10);
+                  if (!isNaN(number)) {
+                      normalizedName = `Cube${number.toString().padStart(2, '0')}`; // Formátuje na "Cube0X"
+                  }
+              }
+              if (originalName !== normalizedName) {
+                console.log(`Mapping GLTF mesh "${originalName}" to internal name "${normalizedName}"`);
+              }
+              // --- KONIEC Normalizácie názvu ---
+
+              // Klonovanie/Nastavenie materiálu (váš kód)
+              if (child.material) {
+                  // Uistíme sa, že je to PhysicalMaterial pre glass a tiene
+                  if (child.material.isMeshPhysicalMaterial) {
+                      child.material = child.material.clone();
+                  } else {
+                      const color = child.material.color ? child.material.color.clone() : defaultPartColor.clone();
+                      child.material.dispose(); // Odstránime starý
+                      child.material = new THREE.MeshPhysicalMaterial({ color: color }); // Vytvoríme nový
+                  }
+              } else {
+                  child.material = new THREE.MeshPhysicalMaterial({ color: defaultPartColor.clone() });
+              }
+
+              // Ukladanie pod NORMALIZOVANÝM názvom
+              modelParts[normalizedName] = child;
+              initialRotations[normalizedName] = child.rotation.clone();
+              initialScales[normalizedName] = child.scale.clone();
+          }
       }
     });
+
+    // Aplikujeme sklenený efekt (už na upravené materiály)
     applyGlassMaterial(model, hdriTexture);
     scene.add(model);
-    console.log("Model pridaný do scény.");
+    console.log("Model pridaný do scény (s nastavením tieňov).");
+
+    // Nastavenie default farieb (používame Cube0X názvy)
     const defaultColorsSetup = {
-      Cube02: colorPalette.orange,
-      Cube03: colorPalette.pink,
-      Cube07: colorPalette.blue,
+      Cube02: voiceColorPalette.oranžová, // Použijeme voiceColorPalette
+      Cube03: voiceColorPalette.ružová,
+      Cube07: voiceColorPalette.modrá,
     };
     for (const partName in defaultColorsSetup) {
-      if (modelParts[partName] && modelParts[partName].material) {
-        modelParts[partName].material.color.set(defaultColorsSetup[partName]);
+      if (modelParts[partName]) { // Kontrolujeme už normalizované názvy
+        updatePartColor(partName, defaultColorsSetup[partName]);
       } else {
-        console.warn(`   Časť ${partName} pre predvolenú farbu nenájdená.`);
+        console.warn(`   Časť ${partName} (Cube0X) pre predvolenú farbu nenájdená.`);
       }
     }
+
+    // Centrovanie a škálovanie modelu
     try {
       const box = new THREE.Box3().setFromObject(model);
       const center = box.getCenter(new THREE.Vector3());
@@ -946,43 +1009,67 @@ loader.load(
         const scale = 4.2 / maxDim;
         model.scale.set(scale, scale, scale);
         model.position.sub(center.multiplyScalar(scale));
+        // Aktualizujeme initialScales PO globálnom škálovaní (ak ich používate relatívne)
+        // Ak resetujete na lokálnu škálu (1,1,1), tento krok nie je nutný
+        Object.keys(initialScales).forEach(key => {
+             if(modelParts[key]) {
+                 // Uložíme LOKÁLNU škálu meshu PO škálovaní rodiča
+                 initialScales[key].copy(modelParts[key].scale);
+             }
+        });
+         console.log(`Model škálovaný faktorom ${scale.toFixed(2)} a centrovaný.`);
       } else {
         console.warn("Bounding box modelu je prázdny.");
       }
     } catch (e) {
       console.error("Chyba pri centrovaní/škálovaní:", e);
     }
+
+    // Nastavenie finálnej pozície modelu
+    // const finalPositionX = 0;
+    // const finalPositionY = 1.7; // Používam hodnotu z vášho kódu z GitHubu
+    // const finalPositionZ = 1;   // Používam hodnotu z vášho kódu z GitHubu
+    // === ZMENA: Použijeme hodnoty z kódu, ktorý ste poslali ===
     const finalPositionX = 0;
-    const finalPositionY = 2;
-    const finalPositionZ = 2;
+    const finalPositionY = 1.7;
+    const finalPositionZ = 1.7;
     model.position.set(finalPositionX, finalPositionY, finalPositionZ);
+    console.log(`Model position set to: X=${finalPositionX}, Y=${finalPositionY}, Z=${finalPositionZ}`);
+
+
+    // Populácia UI prvkov
     populateEnvironmentSelector();
-    populateCubeSelectorAndSetupUI();
+    populateCubeSelectorAndSetupUI(); // Pracuje už s Cube0X názvami
     isModelLoaded = true;
     modelProgress = 1.0;
     updateCombinedProgress();
     checkLoadingComplete();
   },
-  (xhr) => {
-    if (xhr.lengthComputable && xhr.total > 0) {
-      modelProgress = xhr.loaded / xhr.total;
-      updateCombinedProgress();
-    } else {
-      modelProgress = Math.min(modelProgress + 0.05, 0.95);
-      updateCombinedProgress();
+  (xhr) => { // Progress callback
+    if (!isModelLoaded) {
+        if (xhr.lengthComputable && xhr.total > 0) { modelProgress = xhr.loaded / xhr.total; }
+        else { modelProgress = Math.min(modelProgress + 0.05, 0.95); }
+        updateCombinedProgress();
     }
   },
-  (error) => {
-    console.error(
-      `!!! HTTP Chyba pri načítavaní modelu z ${modelPath}:`,
-      error
-    );
-    isModelLoaded = true;
-    modelProgress = 1.0;
-    updateCombinedProgress();
-    checkLoadingComplete(true);
+  (error) => { // Error callback
+    console.error(`!!! Chyba pri načítavaní modelu z ${modelPath}:`, error);
+    isModelLoaded = true; modelProgress = 1.0; updateCombinedProgress(); checkLoadingComplete(true);
   }
 );
+
+// --- Pridanie podlahy (Ground Plane) ---
+// (Tento kód ste už mali správne za loader.load)
+const groundGeometry = new THREE.PlaneGeometry(20, 20);
+const groundMaterial = new THREE.ShadowMaterial({
+    color: 0xaaaaaa,
+    opacity: 0.4,
+});
+const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+groundMesh.rotation.x = -Math.PI / 2;
+groundMesh.position.y = -10; // <<< Upravte túto hodnotu podľa potreby, aby bola pod kockou
+groundMesh.receiveShadow = true; // <<< Povolí prijímanie tieňov
+scene.add(groundMesh);
 
 // --- Ovládanie myšou ---
 const controls = new OrbitControls(camera, canvas);
@@ -1041,7 +1128,20 @@ const animate = () => {
   // <<< Priame renderovanie (bez composera) >>>
   renderer.render(scene, camera);
 };
+
+function positionGroundPlane() {
+  if (model && groundMesh) {
+       // Prepóčítame bounding box PO transformáciách
+        const box = new THREE.Box3().setFromObject(model);
+        if (!box.isEmpty()) {
+           groundMesh.position.y = box.min.y - 0.01; // Umiestniť tesne pod model
+            console.log(`Ground plane positioned at Y: ${groundMesh.position.y.toFixed(3)}`);
+        }
+  }
+}
 animate();
+
+setupPopupTabs();
 
 if (aboutButton && aboutPopup && closePopupButton) {
   // Otvorenie popupu

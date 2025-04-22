@@ -3,30 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KOCKA - Ovládací Panel v4</title>
+    <title>CUBE</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- === Inline štýly pre Loader === -->
     <style>
         /* Základ pre skrytie FOUC */
         body {
-            background-color: #444444; /* Farba pozadia loadera */
-            /* visibility: hidden; */ /* Alternatíva, ak nechceme farbu pozadia */
+            background-color: #444444;
         }
         /* Štýly pre okamžité zobrazenie loadera */
         #loading-overlay {
             position: fixed;
-            inset: 0; /* Skratka pre top: 0; left: 0; right: 0; bottom: 0; */
+            inset: 0;
             width: 100%;
             height: 100%;
-            background-color: #444444; /* Rovnaká farba ako body */
+            background-color: #444444;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 100; /* Nad ostatným obsahom */
-            opacity: 1; /* Viditeľný */
-            /* visibility: visible; */ /* Ak ste použili visibility na body */
-            /* Prechod pre skrytie zostane v externom CSS */
+            z-index: 100;
+            opacity: 1;
         }
         .loader-content {
             display: flex;
@@ -36,8 +32,8 @@
             width: 80%;
             max-width: 450px;
             text-align: center;
-            color: #e0e0e0; /* Základná farba textu pre loader */
-            font-family: "Poppins", sans-serif; /* Základný font */
+            color: #e0e0e0;
+            font-family: "Poppins", sans-serif;
         }
         #loader-image {
             max-width: 250px;
@@ -49,15 +45,9 @@
         .progress-bar-bg { width: 100%; height: 8px; background-color: rgba(0, 0, 0, 0.2); border-radius: 4px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.3); }
         #progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #cccccc, #ffffff); border-radius: 4px; /* Prechod bude v externom CSS */ }
         #progress-text { margin-top: 15px; font-size: 0.9em; font-weight: 500; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
-
-        /* Voliteľné: Skrytie zvyšku obsahu, kým sa JS nenačíta */
-        /* Ak loader nezaberá celú stránku, toto skryje ostatné elementy */
-         #webgl-canvas, #bottom-panel, #about-popup {
-            /* visibility: hidden; */ /* Skryje, ale zaberá miesto */
-             /* display: none; */ /* Odstráni z layoutu - opatrne */
-         }
+        #webgl-canvas, #bottom-panel, #about-popup {
+        }
     </style>
-    <!-- === KONIEC: Inline štýly pre Loader === -->
 </head>
 <body>
     <div id="loading-overlay">
@@ -67,7 +57,7 @@
                 <div class="progress-bar-bg">
                     <div id="progress-bar"></div>
                 </div>
-                <div id="progress-text">Načítam scénu...</div>
+                <div id="progress-text">Loading scene...</div>
             </div>
         </div>
     </div>
@@ -79,27 +69,26 @@
                 <div class="environment-selector-container">
                     <label for="environment-selector">Enviroment:</label>
                     <select id="environment-selector">
-                        <option value="env1">Prostredie 1</option>
-                        <option value="env2">Prostredie 2</option>
-                        <option value="env3">Prostredie 3</option>
-                        <option value="env4">Prostredie 4</option>
+                        <option value="env1">Enviroment 1</option>
+                        <option value="env2">Enviroment 2</option>
+                        <option value="env3">Enviroment 3</option>
+                        <option value="env4">Enviroment 4</option>
                     </select>
                 </div>
                 <div class="cube-selector-container">
                     <label for="cube-selector">Cube:</label>
                     <select id="cube-selector">
-                        <option value="">-- Select --</option>
+                        <option value="">-- Select Cube --</option>
                     </select>
                 </div>
             </div>
             <div id="selected-cube-colors" class="controls-wrapper">
-                <p class="placeholder-text">Select cube</p>
+                <p class="placeholder-text">Select Cube</p>
             </div>
         </div>
         <div class="panel-column" id="column-transforms">
-
             <div id="selected-cube-transforms" class="controls-wrapper">
-                <p class="placeholder-text">Select cube</p>
+                <p class="placeholder-text">Select Cube</p>
             </div>
         </div>
         <div class="panel-column" id="column-voice">
@@ -107,59 +96,110 @@
             <div class="voice-controls">
                 <button id="mic-button" title="Spustiť/Zastaviť rozpoznávanie hlasu">🎙️</button>
                 <div class="voice-status-area">
-                    <span id="mic-status">Pripravený</span>
-                    <p id="transcript-output">Rozpoznaný text: ...</p>
+                    <span id="mic-status">Ready</span>
+                    <p id="transcript-output">Recognized text: ...</p>
                 </div>
             </div>
-
-             <div class="language-selector-container">
-        <label for="language-selector">Jazyk:</label>
+            <div class="language-selector-container">
+        <label for="language-selector">Language:</label>
         <select id="language-selector">
             <option value="sk-SK" selected>Slovenčina</option>
             <option value="en-US">English (US)</option>
-            <!-- Pridajte ďalšie jazyky podľa potreby -->
         </select>
     </div>
-    <p class="gemini-info">Analýza: Google Gemini ♊</p>
-
+    <p class="gemini-info">Voice analysis: <b>Gemini AI ♊</b></p>
         </div>
         <div class="panel-column" id="column-info">
-
             <div class="info-content-flex">
                 <img class="info-image" src="/images/kocka-mapa.png" alt="Mapa kociek" />
                 <div class="info-text-area">
                     <p class="info-text">
-                        <b>FARBA:</b></br> Kocka 4 farba | Kocka 4 reset farby</br>
-                        <b>ROTÁCIA:</b></br> Kocka 4 x/y číslo | Kocka 4 reset rotácie</br>
-                        <b>MIERKA:</b></br> Kocka 4 mierka číslo | Kocka 4 reset mierky
                     </p>
-                    <button id="about-button">O Projekte</button>
-                    <div class="footer-info">
-                        KOCKA © 2025 | vladimir.labat@gmail.com | v2.1
-                    </div>
+                    <button id="about-button">ABOUT</button>
                 </div>
             </div>
         </div>
     </div>
-
     <div id="about-popup">
-        <div class="popup-content">
-            <button id="close-popup-button" title="Zatvoriť">×</button>
-            <h2>O Projekte KOCKA</h2>
-            <p>Tento projekt demonštruje interakciu s 3D modelom pomocou moderných webových technológií.</p>
-            <ul>
-                <li>Vykresľovanie pomocou <strong>Three.js</strong> a WebGL.</li>
-                <li>Dynamické prostredie načítané z <strong>HDRI</strong> máp.</li>
-                <li>Ovládanie farby, rotácie a mierky jednotlivých častí modelu.</li>
-                <li>Výber častí modelu kliknutím alebo cez menu.</li>
-                <li>Experimentálna podpora <strong>hlasového ovládania</strong> (vyžaduje Chrome/Edge a povolenie mikrofónu).</li>
-                <li>Spracovanie hlasu pomocou <strong>Google Gemini AI</strong> (cez backend).</li>
-            </ul>
-            <p>Vytvoril: Vladimir Labat (vladimir.labat@gmail.com)</p>
-            <p>Verzia: 0.3</p>
-            <!-- Môžete sem pridať ďalší obsah -->
-        </div>
-    </div>
+			<div class="popup-content">
+					<button id="close-popup-button" title="Zatvoriť">×</button>
+					<div class="popup-tabs">
+							<button class="tab-button active" data-lang="sk">Slovenčina</button>
+							<button class="tab-button" data-lang="en">English</button>
+					</div>
+					<div class="popup-scrollable-content">
+					<div class="popup-tab-content active" id="popup-content-sk">
+							<!-- SK -->
+							<h2>Kocka</h2>
+							<p style="text-align:justify; font-size: 16px;">
+									Vitajte v interaktívnej demonštrácii KOCKA! Tento projekt ukazuje spojenie moderných webových technológií
+									na vytvorenie pútavého 3D zážitku priamo vo vašom prehliadači.
+							</p>
+							<h3>Použité Technológie a Knižnice:</h3>
+							<p style="text-align:justify; font-size: 16px;">
+										Jadrom aplikácie je knižnica Three.js využívajúca silu WebGL na vykreslenie detailného 3D modelu kocky. 
+										Realistický vzhľad skleneného materiálu je dosiahnutý pomocou fyzikálne založených princípov (PBR) a dynamického osvetlenia scény, 
+										ktoré zabezpečujú HDRI mapy. Moderný nástroj Vite.js zabezpečuje rýchly vývoj a optimalizovaný výkon. 
+										Logika je napísaná v JavaScripte (ES Modules) a používateľské rozhranie v HTML & CSS.
+										Plynulé animácie, ako pulzovanie kocky, zabezpečuje knižnica Tween.js.
+							</p>
+							<h3>Hlavné Funkcie:</h3>
+							<p style="text-align:justify; font-size: 16px;">
+									Ovládací panel umožňuje detailnú kontrolu vybraných častí modelu, ktoré možno zvoliť kliknutím alebo cez menu. 
+									Môžete meniť farbu, rotáciu (X/Y) a mierku (Z). 
+									Dostupné sú rôzne prostredia (HDRI) a pohľad kamery je plne responzívny.
+							</p>
+							<h3>♊ Experimentálne Hlasové Ovládanie:</h3>
+							<p style="text-align:justify; font-size: 16px;">
+									Kľúčovou funkciou je hlasové ovládanie využívajúce Web Speech API prehliadača (Chrome/Edge) na rozpoznanie reči (SK/EN). 
+									Rozpoznaný text následne analyzuje umelá inteligencia <strong>Google Gemini AI</strong> (cez bezpečné backendové API), 
+									ktorá pochopí zámer príkazu (akcia, cieľ, parametre) aj pri rôznych formuláciách. Frontend potom vykoná príslušnú akciu.
+							</p>
+							<hr style="border-color: rgba(255, 255, 255, 0.1); margin: 20px 0;">
+							<p>
+									Vytvoril: Vladimir Labat (vladimir.labat@gmail.com)<br>
+									Verzia: 0.2 (Vite, Gemini AI Integration)
+							</p>
+							<!-- Koniec SK textu -->
+					</div>
+
+
+					<div class="popup-tab-content" id="popup-content-en">
+							<!-- EN -->
+							<h2>Cube</h2>
+							<p style="text-align:justify; font-size: 16px;">
+									Welcome to the interactive demonstration KOCKA! This project showcases the combination of modern web technologies
+									to create an engaging 3D experience directly in your browser.
+							</p>
+							<h3>Technologies and Libraries Used:</h3>
+							<p style="text-align:justify; font-size: 16px;">
+								The core of the application is the Three.js library utilizing the power of WebGL to render a detailed 3D cube model.
+								The realistic appearance of the glass material is achieved using Physically Based Rendering (PBR) and dynamic scene lighting provided by HDRI maps. 
+								The modern tool Vite.js ensures fast development and optimized performance. The logic is written in JavaScript (ES Modules), and the user interface in HTML & CSS.
+								Smooth animations, like the cube pulsing, are handled by the Tween.js library.
+							</p>
+							<h3>Main Features:</h3>
+							<p style="text-align:justify; font-size: 16px;">
+								The control panel allows detailed control over selected parts of the model, which can be chosen by clicking or via the panel menu. 
+								You can change the color, rotation (X/Y), and scale (Z). Various environments (HDRI) are available, and the camera view is fully responsive.
+							</p>
+							<h3>♊ Experimental Voice Control:</h3>
+							<p style="text-align:justify; font-size: 16px;">
+									A key feature is the voice control implementation using the browser's Web Speech API (Chrome/Edge) for speech recognition (SK/EN). 
+									The recognized text is then analyzed by the <strong>Google Gemini AI</strong> (via a secure backend API), 
+									which understands the command's intent (action, target, parameters) even with varied phrasing. 
+									The frontend then executes the corresponding action.
+							</p>
+							<hr style="border-color: rgba(255, 255, 255, 0.1); margin: 20px 0;">
+							<p>
+									Created by: Vladimir Labat (vladimir.labat@gmail.com)<br>
+									Version: 0.2 (Vite, Gemini AI Integration)
+							</p>
+							<!-- Koniec EN textu -->
+					</div>
+			</div>
+	</div>
+	</div>
     <script type="module" src="/src/main.js"></script>
 </body>
 </html>

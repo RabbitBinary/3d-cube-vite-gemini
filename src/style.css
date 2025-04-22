@@ -167,12 +167,10 @@ body {
   font-weight: 600;
   color: #bd93f9;
   margin-bottom: 8px;
-  padding: 6px 0;
   border-bottom: 1px solid rgba(189, 147, 249, 0.2);
   text-align: left;
   flex-shrink: 0;
-} 
-
+}
 
 /* Kontajnery s ovládacími prvkami - všeobecné */
 .controls-wrapper {
@@ -198,9 +196,9 @@ body {
   gap: 5px;
 }
 #column-selection-color label {
-  font-weight: 300;
+  font-weight: 600;
   color: #ccc;
-  font-size: 0.85em;
+  font-size: 0.8em;
   white-space: nowrap;
   width: 75px;
   text-align: left;
@@ -490,39 +488,102 @@ body {
   background-color: #50546b;
 }
 
-/* Špecifiká pre tretí stĺpec (Hlas) */
+/* === Špecifiká pre tretí stĺpec (Hlas) s Neónovým Tlačidlom === */
 #column-voice .voice-controls {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 5px 0;
+  gap: 15px; /* Zväčšíme medzeru kvôli žiare tlačidla */
+  padding: 5px 0 15px; /* Upravený padding dole */
+  /* border-bottom: 1px solid rgba(189, 147, 249, 0.2); */ /* Odstránime border, ak už nie je potrebný */
 }
+
+/* === NOVÉ/UPRAVENÉ: Neónový Efekt pre Mikrofón === */
 #column-voice #mic-button {
-  background-color: #44475a;
-  color: #f8f8f2;
-  border: 1px solid #50546b;
+  /* --- Základné rozmery a layout (mierne upravené) --- */
+  color: #f0f0f0; /* Svetlejšia ikona */
   border-radius: 50%;
+  width: 38px; /* Väčšie tlačidlo */
+  height: 38px;
   padding: 0;
-  font-size: 1.3em;
+  font-size: 1.5em; /* Väčšia ikona */
   cursor: pointer;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  position: relative; /* Pre pseudo-element */
+  overflow: hidden; /* Skryje prečnievajúci okraj */
+
+  /* --- Neónové farby a prechody --- */
+  background-color: #4d007a; /* Tmavá fialová */
+  border: 1px solid #8a4fff; /* Svetlejší fialový okraj */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease,
+    border-color 0.3s ease, transform 0.2s ease;
+
+  /* --- NEÓNOVÁ ŽIARA (box-shadow) --- */
+  box-shadow: 0 0 5px #a87fff, 0 0 10px #a87fff, 0 0 15px #8a4fff,
+    0 0 25px #6a1fff;
 }
+
+/* --- Efekt pri Hover --- */
 #column-voice #mic-button:hover {
-  background-color: #50546b;
-  border-color: #6272a4;
+  background-color: #6a1fff; /* Svetlejšia fialová */
+  border-color: #c4a7ff;
+  box-shadow: 0 0 7px #c4a7ff, 0 0 15px #c4a7ff, 0 0 25px #a87fff,
+    0 0 40px #8a4fff; /* Intenzívnejšia žiara */
   transform: scale(1.05);
 }
+
+/* --- Štýl pri Nahrávaní (Listening) --- */
 #column-voice #mic-button.listening {
-  background-color: #ff5555;
+  background-color: #ff4040; /* Jasná červená */
   border-color: #ff7070;
-  box-shadow: 0 0 8px rgba(255, 85, 85, 0.6);
+  /* Červená žiara a animácia */
+  box-shadow: 0 0 8px #ff7070, 0 0 16px #ff7070, 0 0 25px #ff4040,
+    0 0 40px #d40000;
+  animation: pulse-red 1.5s infinite ease-in-out;
 }
+
+/* --- Voliteľné: Animácia Pulzovania Žiary (pre stav listening) --- */
+@keyframes pulse-red {
+  0% {
+    box-shadow: 0 0 8px #ff7070, 0 0 16px #ff7070, 0 0 25px #ff4040,
+      0 0 40px #d40000;
+  }
+  50% {
+    box-shadow: 0 0 12px #ff8a8a, 0 0 24px #ff8a8a, 0 0 35px #ff5555,
+      0 0 55px #e00000;
+  }
+  100% {
+    box-shadow: 0 0 8px #ff7070, 0 0 16px #ff7070, 0 0 25px #ff4040,
+      0 0 40px #d40000;
+  }
+}
+
+/* --- Voliteľné: Dodatočný "elektrický" okraj --- */
+#column-voice #mic-button::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 2px solid #e0cfff; /* Veľmi svetlá fialová */
+  border-radius: 50%;
+  opacity: 0.6;
+  z-index: -1;
+  transition: opacity 0.3s ease, border-color 0.3s ease; /* Pridaný prechod pre border-color */
+}
+#column-voice #mic-button:hover::before {
+  opacity: 0.9;
+}
+#column-voice #mic-button.listening::before {
+  border-color: #ffabab; /* Svetlo červená */
+  opacity: 0.8;
+}
+/* === KONIEC Neónového Efektu === */
+
+/* --- Zvyšok štýlov pre voice stĺpec (zostáva rovnaký) --- */
 #column-voice .voice-status-area {
   display: flex;
   flex-direction: column;
@@ -552,7 +613,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 10px; /* Odsadenie od voice-controls */
+  margin-top: 10px;
 }
 
 #column-voice .language-selector-container label {
@@ -565,15 +626,15 @@ body {
 
 #column-voice .language-selector-container select {
   flex-grow: 1;
-  padding: 4px 6px; /* Menší padding */
+  padding: 4px 6px;
   background-color: #333644;
   color: #f8f8f2;
   border: 1px solid #50546b;
   border-radius: 3px;
-  font-size: 0.85em; /* Menší font */
+  font-size: 0.85em;
   cursor: pointer;
   outline: none;
-  height: 26px; /* Menšia výška */
+  height: 26px;
   box-sizing: border-box;
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='5' viewBox='0 0 10 5'%3E%3Cpath fill='%23cccccc' d='M0 0l5 5 5-5z'/%3E%3C/svg%3E");
@@ -586,10 +647,10 @@ body {
 }
 
 #column-voice .gemini-info {
-  font-size: 0.75em;
+  font-size: 0.8em; /* Upravená veľkosť */
   color: #888;
   text-align: center;
-  margin: 10px 0 0 0; /* Odsadenie zhora */
+  margin: 10px 0 5px 0; /* Upravený margin */
   padding: 0;
 }
 
@@ -742,6 +803,121 @@ body {
   }
 }
 
+/* --- Responzivita --- */
+
+/* Pre tablety a menšie (<= 992px) - stĺpce pod sebou */
+@media (max-width: 992px) {
+  #bottom-panel {
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 40vh;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    width: auto;
+  }
+  .panel-column {
+    width: auto;
+    min-width: unset;
+    flex-shrink: 1;
+    max-height: none;
+    overflow-y: visible;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 8px;
+    padding: 40px;
+  }
+  .panel-column:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  #selected-cube-transforms {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #selected-cube-transforms .reset-buttons-column {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-top: 15px;
+  }
+  #selected-cube-transforms .rotation-reset-button,
+  #selected-cube-transforms .scale-reset-button {
+    flex-grow: 0;
+    width: 100%;
+  }
+
+  #column-info .info-text-area {
+    text-align: left;
+  }
+
+  #column-selection-color select {
+    margin-left: 40px;
+  }
+}
+
+/* Pre malé mobily (<= 600px) - ďalšie úpravy veľkostí */
+@media (max-width: 600px) {
+  #bottom-panel {
+    max-height: 35vh;
+  } /* Ešte upravíme výšku */
+  .panel-column {
+    padding: 20px;
+    gap: 10px;
+  }
+  .column-header {
+    font-size: 0.95em;
+    margin-bottom: 5px;
+  }
+  #column-selection-color label {
+    width: 60px;
+    font-size: 0.85em;
+  }
+  #column-selection-color select {
+    font-size: 0.85em;
+    height: 26px;
+    margin-left: 40px;
+  }
+  #selected-cube-colors .color-swatch {
+    width: 20px;
+    height: 20px;
+    gap: 8px;
+  }
+  .slider-row label {
+    width: 60px;
+    font-size: 0.85em;
+  }
+  .slider-row input[type="range"] {
+    min-width: 40px;
+  }
+  .slider-row .value-display {
+    min-width: 30px;
+    font-size: 0.85em;
+  }
+  #selected-cube-transforms .rotation-reset-button,
+  #selected-cube-transforms .scale-reset-button {
+    font-size: 0.8em;
+    padding: 4px 8px;
+  } /* Trochu väčšie tlačidlá */
+  #column-info .info-text,
+  #column-info .footer-info {
+    font-size: 0.8em;
+  }
+  #column-voice #mic-button {
+    width: 36px;
+    height: 36px;
+    font-size: 1.4em;
+  }
+  .reset-button,
+  #about-button {
+    font-size: 0.8em;
+    padding: 3px 8px;
+    height: 26px;
+  }
+}
+
 /* Štýly pre popup zostávajú rovnaké ako predtým */
 #about-popup {
   position: fixed;
@@ -750,46 +926,40 @@ body {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.8);
-  display: none;
+  display: none; /* Skryté defaultne */
   justify-content: center;
   align-items: center;
   z-index: 50;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
+  padding: 20px; /* Padding okolo okna */
+  box-sizing: border-box; /* Aby padding nepridal k rozmerom */
 }
 #about-popup.visible {
   display: flex;
   opacity: 1;
 }
+
 .popup-content {
   background: linear-gradient(145deg, #3a3c50, #282a36);
-  padding: 30px 40px;
-  border-radius: 12px;
-  max-width: 700px;
-  width: calc(100% - 80px);
-  max-height: calc(100vh - 80px);
-  overflow-y: auto;
+  /* --- Pevné rozmery (upravte podľa potreby) --- */
+  width: 90vw;       /* Šírka 90% viewportu */
+  max-width: 750px;  /* Maximálna šírka */
+  height: 80vh;      /* Výška 80% viewportu */
+  max-height: 650px; /* Maximálna výška v pixeloch */
+  /* -------------------------------------------- */
+  padding: 0; /* <<< Vnútorný padding bude riešený nižšie */
+  border-radius: 10px; /* Mierne menšie zaoblenie */
   position: relative;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6); /* Výraznejší tieň */
   color: #f0f0f0;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(150, 150, 150, 0.6) rgba(0, 0, 0, 0.2);
+  display: flex; /* <<< Použijeme flexbox */
+  flex-direction: column; /* Obsah pod seba */
+  overflow: hidden; /* <<< Skryjeme overflow tu, rieši ho scrollable-content */
 }
-.popup-content::-webkit-scrollbar {
-  width: 6px;
-}
-.popup-content::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-}
-.popup-content::-webkit-scrollbar-thumb {
-  background-color: rgba(150, 150, 150, 0.6);
-  border-radius: 10px;
-}
-.popup-content::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(180, 180, 180, 0.8);
-}
+
+/* Tlačidlo Zatvoriť */
 #close-popup-button {
   position: absolute;
   top: 10px;
@@ -803,53 +973,91 @@ body {
   cursor: pointer;
   padding: 0 5px;
   transition: color 0.2s ease;
+  z-index: 10; /* Nad obsahom */
 }
 #close-popup-button:hover {
   color: #fff;
 }
-.popup-content h2 {
-  margin-top: 0;
-  color: #bd93f9;
-  text-align: center;
-  margin-bottom: 25px;
-}
-.popup-content p {
-  line-height: 1.7;
-  margin-bottom: 15px;
-  font-size: 0.95em;
-}
-.popup-content ul {
-  list-style: disc;
-  margin-left: 20px;
-  margin-bottom: 20px;
-  padding-left: 15px;
-}
-.popup-content li {
-  margin-bottom: 8px;
-}
-.popup-content strong {
-  color: #8be9fd;
-}
-.popup-content code {
-  background-color: rgba(255, 255, 255, 0.1);
-  padding: 2px 5px;
-  border-radius: 3px;
-  font-family: monospace;
-  font-size: 0.9em;
-  color: #f1fa8c;
+
+/* Kontajner pre záložky */
+.popup-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Tenšia linka */
+  /* Marginy a paddingy pre zarovnanie s obsahom nižšie */
+  margin: 0;
+  padding: 15px 40px 0 40px; /* Padding hore a do strán */
+  flex-shrink: 0; /* Záložky sa nezmrštia */
 }
 
-/* --- Štýly pre mobilné zobrazenie (ak by ste chceli skryť panel) --- */
-/*
-@media (max-width: 768px) and (orientation: portrait) {
-  #bottom-panel {
-    display: none; // Úplne skryť panel na mobiloch na výšku
-  }
-  #mobile-message {
-     display: flex; // Zobraziť správu pre otočenie
-  }
+/* Tlačidlá záložiek */
+.tab-button {
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #aaa;
+  font-size: 1em;
+  font-weight: 500;
+  margin-bottom: -1px; /* Prekryje border-bottom kontajnera */
+  transition: color 0.2s ease, border-bottom-color 0.2s ease;
 }
-*/
+.tab-button:hover { color: #eee; }
+.tab-button.active { color: #bd93f9; border-bottom-color: #bd93f9; }
+
+/* === NOVÉ: Kontajner pre skrolovateľný obsah === */
+.popup-scrollable-content {
+    flex-grow: 1; /* Zaberie zvyšnú výšku */
+    overflow-y: auto; /* <<< Povolenie vertikálneho skrolovania */
+    padding: 25px 40px; /* Vnútorný padding pre text */
+    /* Moderný scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(150, 150, 150, 0.6) rgba(0, 0, 0, 0.2);
+}
+.popup-scrollable-content::-webkit-scrollbar { width: 6px; }
+.popup-scrollable-content::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 3px; }
+.popup-scrollable-content::-webkit-scrollbar-thumb { background-color: rgba(150, 150, 150, 0.6); border-radius: 3px; }
+.popup-scrollable-content::-webkit-scrollbar-thumb:hover { background-color: rgba(180, 180, 180, 0.8); }
+/* --- KONIEC NOVÉHO --- */
+
+
+/* Obsah záložky */
+.popup-tab-content { display: none; }
+.popup-tab-content.active { display: block; }
+
+/* Štýly pre text vnútri popupu (teraz v rámci scrollable-content) */
+.popup-scrollable-content h2 { margin-top: 0; color: #bd93f9; text-align: center; margin-bottom: 25px; }
+.popup-scrollable-content p { line-height: 1.7; margin-bottom: 15px; font-size: 0.95em; }
+.popup-scrollable-content ul { list-style: disc; margin-left: 20px; margin-bottom: 20px; padding-left: 15px; }
+.popup-scrollable-content li { margin-bottom: 8px; }
+.popup-scrollable-content strong { color: #8be9fd; }
+.popup-scrollable-content code { background-color: rgba(255, 255, 255, 0.1); padding: 2px 5px; border-radius: 3px; font-family: monospace; font-size: 0.9em; color: #f1fa8c; }
+.popup-scrollable-content hr { border-color: rgba(255, 255, 255, 0.1); margin: 20px 0; border-style: solid; border-width: 1px 0 0 0; }
+
+/* --- Responzivita pre Popup --- */
+@media (max-width: 768px) {
+    .popup-content {
+        width: 95vw; /* Väčšia šírka na tabletoch */
+        height: 85vh; /* Väčšia výška */
+        max-height: 90vh;
+    }
+    .popup-tabs { padding: 10px 20px 0 20px; }
+    .popup-scrollable-content { padding: 20px; } /* Menší padding obsahu */
+    .popup-scrollable-content h2 { font-size: 1.4em; }
+    .popup-scrollable-content p, .popup-scrollable-content li { font-size: 0.9em; }
+}
+@media (max-width: 480px) {
+     .popup-content {
+        width: 95vw;
+        height: 90vh;
+        max-height: 90vh;
+        border-radius: 6px;
+    }
+     .popup-tabs { padding: 8px 15px 0 15px; }
+     .tab-button { padding: 8px 15px; font-size: 0.9em;}
+     .popup-scrollable-content { padding: 15px; }
+}
+
 #mobile-message {
   display: none; /* Predvolene skryté */
 }
