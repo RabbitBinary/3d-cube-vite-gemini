@@ -90,6 +90,16 @@
     </div>
     <canvas id="webgl-canvas"></canvas>
     <div id="bottom-panel">
+      <div class="panel-column" id="column-info">
+        <div class="info-content-flex controls-wrapper">
+          <div class="info-text-area">
+            <div class="info-buttons-container">
+              <button id="about-button">ABOUT</button>
+              <button id="help-button">HELP</button>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="panel-column" id="column-selection-color">
         <div class="selection-controls">
           <div class="environment-selector-container">
@@ -137,38 +147,25 @@
         </div>
         <p class="gemini-info">Voice analysis: <b>Gemini AI ♊</b></p>
       </div>
-      <div class="panel-column" id="column-info">
-        <div class="info-content-flex">
-          <img
-            class="info-image"
-            src="/images/kocka-mapa.png"
-            alt="Mapa kociek"
-          />
-          <div class="info-text-area">
-            <p class="info-text"></p>
-            <button id="about-button">ABOUT</button>
-          </div>
-        </div>
-      </div>
     </div>
     <div id="about-popup">
       <div class="popup-content">
-        <button id="close-popup-button" title="Zatvoriť">×</button>
+        <button class="close-popup-button" title="Zatvoriť">×</button>
         <div class="popup-tabs">
           <button class="tab-button active" data-lang="sk">Slovenčina</button>
           <button class="tab-button" data-lang="en">English</button>
         </div>
         <div class="popup-scrollable-content">
-          <div class="popup-tab-content active" id="popup-content-sk">
+          <div class="popup-tab-content active" id="popup-content-sk-about">
             <!-- SK -->
             <h2>Kocka</h2>
-            <p style="text-align: justify; font-size: 16px">
+            <p style="text-align: justify;">
               Vitajte v interaktívnej demonštrácii KOCKA! Tento projekt ukazuje
               spojenie moderných webových technológií na vytvorenie pútavého 3D
               zážitku priamo vo vašom prehliadači.
             </p>
             <h3>Použité Technológie a Knižnice:</h3>
-            <p style="text-align: justify; font-size: 16px">
+            <p style="text-align: justify;">
               Jadrom aplikácie je knižnica Three.js využívajúca silu WebGL na
               vykreslenie detailného 3D modelu kocky. Realistický vzhľad
               skleneného materiálu je dosiahnutý pomocou fyzikálne založených
@@ -179,14 +176,14 @@
               ako pulzovanie kocky, zabezpečuje knižnica Tween.js.
             </p>
             <h3>Hlavné Funkcie:</h3>
-            <p style="text-align: justify; font-size: 16px">
+            <p style="text-align: justify;">
               Ovládací panel umožňuje detailnú kontrolu vybraných častí modelu,
               ktoré možno zvoliť kliknutím alebo cez menu. Môžete meniť farbu,
               rotáciu (X/Y) a mierku (Z). Dostupné sú rôzne prostredia (HDRI) a
               pohľad kamery je plne responzívny.
             </p>
             <h3>♊ Experimentálne Hlasové Ovládanie:</h3>
-            <p style="text-align: justify; font-size: 16px">
+            <p style="text-align: justify;">
               Kľúčovou funkciou je hlasové ovládanie využívajúce Web Speech API
               prehliadača (Chrome/Edge) na rozpoznanie reči (SK/EN). Rozpoznaný
               text následne analyzuje umelá inteligencia
@@ -204,16 +201,16 @@
             <!-- Koniec SK textu -->
           </div>
 
-          <div class="popup-tab-content" id="popup-content-en">
+          <div class="popup-tab-content" id="popup-content-en-about">
             <!-- EN -->
             <h2>Cube</h2>
-            <p style="text-align: justify; font-size: 16px">
+            <p style="text-align: justify;">
               Welcome to the interactive demonstration KOCKA! This project
               showcases the combination of modern web technologies to create an
               engaging 3D experience directly in your browser.
             </p>
             <h3>Technologies and Libraries Used:</h3>
-            <p style="text-align: justify; font-size: 16px">
+            <p style="text-align: justify;">
               The core of the application is the Three.js library utilizing the
               power of WebGL to render a detailed 3D cube model. The realistic
               appearance of the glass material is achieved using Physically
@@ -224,7 +221,7 @@
               like the cube pulsing, are handled by the Tween.js library.
             </p>
             <h3>Main Features:</h3>
-            <p style="text-align: justify; font-size: 16px">
+            <p style="text-align: justify;">
               The control panel allows detailed control over selected parts of
               the model, which can be chosen by clicking or via the panel menu.
               You can change the color, rotation (X/Y), and scale (Z). Various
@@ -232,7 +229,7 @@
               responsive.
             </p>
             <h3>♊ Experimental Voice Control:</h3>
-            <p style="text-align: justify; font-size: 16px">
+            <p style="text-align: justify;">
               A key feature is the voice control implementation using the
               browser's Web Speech API (Chrome/Edge) for speech recognition
               (SK/EN). The recognized text is then analyzed by the

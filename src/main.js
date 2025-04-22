@@ -4,7 +4,7 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import TWEEN from "@tweenjs/tween.js";
-import { setupPopupTabs } from './ui/popupTabs.js';
+import { initializePopups } from './ui/popups.js';
 
 // --- Základné nastavenia ---
 const canvas = document.querySelector("#webgl-canvas");
@@ -1043,29 +1043,4 @@ const animate = () => {
 };
 animate();
 
-setupPopupTabs();
-
-if (aboutButton && aboutPopup && closePopupButton) {
-  // Otvorenie popupu
-  aboutButton.addEventListener("click", () => {
-    aboutPopup.classList.add("visible");
-  });
-
-  // Zatvorenie tlačidlom X
-  closePopupButton.addEventListener("click", () => {
-    aboutPopup.classList.remove("visible");
-  });
-
-  // Zatvorenie kliknutím na pozadie (overlay)
-  aboutPopup.addEventListener("click", (event) => {
-    // Zatvorí sa len ak sa kliklo priamo na overlay, nie na obsah vnútri
-    if (event.target === aboutPopup) {
-      aboutPopup.classList.remove("visible");
-    }
-  });
-  console.log("Event listenery pre About popup pridané."); // Kontrolný log
-} else {
-  console.warn(
-    "Chýbajú elementy pre About popup (#about-button, #about-popup, #close-popup-button). Neboli pridané listenery."
-  );
-}
+initializePopups();
