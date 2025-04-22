@@ -240,26 +240,8 @@ scene.add(ambientLight);
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(5, 10, 7); // Stále dôležité pre smer svetla
 
-directionalLight.castShadow = true;
-
-
-// === PRIDAŤ/UPRAVIŤ TOTO: Konfigurácia mapy tieňa (voliteľné, ale odporúčané) ===
-directionalLight.shadow.mapSize.width = 1024; // Rozlíšenie mapy tieňa (vyššie = ostrejšie, náročnejšie)
-directionalLight.shadow.mapSize.height = 1024;
-directionalLight.shadow.camera.near = 0.5;    // Ako blízko kamery svetla začínajú tiene
-directionalLight.shadow.camera.far = 50;     // Ako ďaleko končia
-// Nastavenie rozsahu "kamery" svetla (orthographic pre DirectionalLight)
-directionalLight.shadow.camera.left = -10;
-directionalLight.shadow.camera.right = 10;
-directionalLight.shadow.camera.top = 10;
-directionalLight.shadow.camera.bottom = -10;
-// directionalLight.shadow.bias = -0.001; // Pomáha predchádzať "shadow acne" (artefakty) - experimentujte
-// === KONIEC PRIDANIA/ÚPRAVY ===
-
-
 scene.add(directionalLight);
-const pointLight = new THREE.PointLight(0xffffff, 0.8, 100);
-pointLight.position.set(-3, 4, 4);
+const pointLight = new THREE.PointLight(0xffffff, 1.0, 100);
 scene.add(pointLight);
 
 // --- Renderer (BEZ shadowMap) ---
@@ -270,7 +252,7 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.0;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-renderer.shadowMap.enabled = true;
+renderer.shadowMap.enabled = false;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 // === LOGIKA PRE HLASOVÉ OVLÁDANIE ===
@@ -912,94 +894,49 @@ function populateCubeSelectorAndSetupUI() {
   }
 }
 
-// --- Načítanie GLB modelu (s nastavením tieňov a normalizáciou názvov) ---
+// --- Načítanie GLB modelu ---
 const loader = new GLTFLoader();
-// Použijeme cestu pre Vite (súbor je v public/models/)
-const modelPath = "/models/glass-voice-4.glb";
+const modelPath = "models/glass-voice-4.glb";
 loader.load(
   modelPath,
   (gltf) => {
     console.log("Model úspešne načítaný.");
     model = gltf.scene;
-    modelParts = {}; // Reset
+    modelParts = {};
     initialRotations = {};
     initialScales = {};
-
-    // Pôvodné nastavenie rotácie modelu (môžete ponechať alebo odstrániť)
-    // model.rotation.x = THREE.MathUtils.degToRad(0);
-    // model.rotation.y = THREE.MathUtils.degToRad(30);
-    // model.rotation.z = THREE.MathUtils.degToRad(0);
-
-    // Prejdeme model, nastavíme tiene, normalizujeme názvy a uložíme referencie
+    model.rotation.x = THREE.MathUtils.degToRad(0);
+    model.rotation.y = THREE.MathUtils.degToRad(30);
+    model.rotation.z = THREE.MathUtils.degToRad(0);
     model.traverse((child) => {
-      if (child.isMesh) { // Aplikujeme na všetky meshe v modeli
-          // === POVILENIE VRHANIA TIEŇA ===
-          child.castShadow = true;
-          // === KONIEC ===
-
-          // Ak chceme, aby aj kocka prijímala tiene (napr. od iných častí samej seba)
-          // child.receiveShadow = true;
-
-          // Spracovanie len pre kocky (CubeXX)
-          if (child.name.startsWith("Cube")) {
-              const originalName = child.name; // Napr. "Cube4" alebo "Cube04"
-
-              // --- Normalizácia názvu na Cube0X ---
-              const match = originalName.match(/^Cube(\d+)$/i); // Nájde číslo
-              let normalizedName = originalName; // Defaultne ponechá pôvodný
-              if (match && match[1]) {
-                  const number = parseInt(match[1], 10);
-                  if (!isNaN(number)) {
-                      normalizedName = `Cube${number.toString().padStart(2, '0')}`; // Formátuje na "Cube0X"
-                  }
-              }
-              if (originalName !== normalizedName) {
-                console.log(`Mapping GLTF mesh "${originalName}" to internal name "${normalizedName}"`);
-              }
-              // --- KONIEC Normalizácie názvu ---
-
-              // Klonovanie/Nastavenie materiálu (váš kód)
-              if (child.material) {
-                  // Uistíme sa, že je to PhysicalMaterial pre glass a tiene
-                  if (child.material.isMeshPhysicalMaterial) {
-                      child.material = child.material.clone();
-                  } else {
-                      const color = child.material.color ? child.material.color.clone() : defaultPartColor.clone();
-                      child.material.dispose(); // Odstránime starý
-                      child.material = new THREE.MeshPhysicalMaterial({ color: color }); // Vytvoríme nový
-                  }
-              } else {
-                  child.material = new THREE.MeshPhysicalMaterial({ color: defaultPartColor.clone() });
-              }
-
-              // Ukladanie pod NORMALIZOVANÝM názvom
-              modelParts[normalizedName] = child;
-              initialRotations[normalizedName] = child.rotation.clone();
-              initialScales[normalizedName] = child.scale.clone();
-          }
+      if (child.isMesh && child.name.startsWith("Cube")) {
+        if (child.material) {
+          child.material = child.material.clone();
+        } else {
+          child.material = new THREE.MeshStandardMaterial({
+            color: defaultPartColor.clone(),
+          });
+        }
+        modelParts[child.name] = child;
+        initialRotations[child.name] = child.rotation.clone();
+        initialScales[child.name] = child.scale.clone();
       }
     });
-
-    // Aplikujeme sklenený efekt (už na upravené materiály)
     applyGlassMaterial(model, hdriTexture);
     scene.add(model);
-    console.log("Model pridaný do scény (s nastavením tieňov).");
-
-    // Nastavenie default farieb (používame Cube0X názvy)
+    console.log("Model pridaný do scény.");
     const defaultColorsSetup = {
-      Cube02: voiceColorPalette.oranžová, // Použijeme voiceColorPalette
-      Cube03: voiceColorPalette.ružová,
-      Cube07: voiceColorPalette.modrá,
+      Cube02: colorPalette.orange,
+      Cube03: colorPalette.pink,
+      Cube07: colorPalette.blue,
     };
     for (const partName in defaultColorsSetup) {
-      if (modelParts[partName]) { // Kontrolujeme už normalizované názvy
-        updatePartColor(partName, defaultColorsSetup[partName]);
+      if (modelParts[partName] && modelParts[partName].material) {
+        modelParts[partName].material.color.set(defaultColorsSetup[partName]);
       } else {
-        console.warn(`   Časť ${partName} (Cube0X) pre predvolenú farbu nenájdená.`);
+        console.warn(`   Časť ${partName} pre predvolenú farbu nenájdená.`);
       }
     }
-
-    // Centrovanie a škálovanie modelu
     try {
       const box = new THREE.Box3().setFromObject(model);
       const center = box.getCenter(new THREE.Vector3());
@@ -1009,67 +946,43 @@ loader.load(
         const scale = 4.2 / maxDim;
         model.scale.set(scale, scale, scale);
         model.position.sub(center.multiplyScalar(scale));
-        // Aktualizujeme initialScales PO globálnom škálovaní (ak ich používate relatívne)
-        // Ak resetujete na lokálnu škálu (1,1,1), tento krok nie je nutný
-        Object.keys(initialScales).forEach(key => {
-             if(modelParts[key]) {
-                 // Uložíme LOKÁLNU škálu meshu PO škálovaní rodiča
-                 initialScales[key].copy(modelParts[key].scale);
-             }
-        });
-         console.log(`Model škálovaný faktorom ${scale.toFixed(2)} a centrovaný.`);
       } else {
         console.warn("Bounding box modelu je prázdny.");
       }
     } catch (e) {
       console.error("Chyba pri centrovaní/škálovaní:", e);
     }
-
-    // Nastavenie finálnej pozície modelu
-    // const finalPositionX = 0;
-    // const finalPositionY = 1.7; // Používam hodnotu z vášho kódu z GitHubu
-    // const finalPositionZ = 1;   // Používam hodnotu z vášho kódu z GitHubu
-    // === ZMENA: Použijeme hodnoty z kódu, ktorý ste poslali ===
     const finalPositionX = 0;
-    const finalPositionY = 1.7;
-    const finalPositionZ = 1.7;
+    const finalPositionY = 2;
+    const finalPositionZ = 2;
     model.position.set(finalPositionX, finalPositionY, finalPositionZ);
-    console.log(`Model position set to: X=${finalPositionX}, Y=${finalPositionY}, Z=${finalPositionZ}`);
-
-
-    // Populácia UI prvkov
     populateEnvironmentSelector();
-    populateCubeSelectorAndSetupUI(); // Pracuje už s Cube0X názvami
+    populateCubeSelectorAndSetupUI();
     isModelLoaded = true;
     modelProgress = 1.0;
     updateCombinedProgress();
     checkLoadingComplete();
   },
-  (xhr) => { // Progress callback
-    if (!isModelLoaded) {
-        if (xhr.lengthComputable && xhr.total > 0) { modelProgress = xhr.loaded / xhr.total; }
-        else { modelProgress = Math.min(modelProgress + 0.05, 0.95); }
-        updateCombinedProgress();
+  (xhr) => {
+    if (xhr.lengthComputable && xhr.total > 0) {
+      modelProgress = xhr.loaded / xhr.total;
+      updateCombinedProgress();
+    } else {
+      modelProgress = Math.min(modelProgress + 0.05, 0.95);
+      updateCombinedProgress();
     }
   },
-  (error) => { // Error callback
-    console.error(`!!! Chyba pri načítavaní modelu z ${modelPath}:`, error);
-    isModelLoaded = true; modelProgress = 1.0; updateCombinedProgress(); checkLoadingComplete(true);
+  (error) => {
+    console.error(
+      `!!! HTTP Chyba pri načítavaní modelu z ${modelPath}:`,
+      error
+    );
+    isModelLoaded = true;
+    modelProgress = 1.0;
+    updateCombinedProgress();
+    checkLoadingComplete(true);
   }
 );
-
-// --- Pridanie podlahy (Ground Plane) ---
-// (Tento kód ste už mali správne za loader.load)
-const groundGeometry = new THREE.PlaneGeometry(20, 20);
-const groundMaterial = new THREE.ShadowMaterial({
-    color: 0xaaaaaa,
-    opacity: 0.4,
-});
-const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-groundMesh.rotation.x = -Math.PI / 2;
-groundMesh.position.y = -10; // <<< Upravte túto hodnotu podľa potreby, aby bola pod kockou
-groundMesh.receiveShadow = true; // <<< Povolí prijímanie tieňov
-scene.add(groundMesh);
 
 // --- Ovládanie myšou ---
 const controls = new OrbitControls(camera, canvas);
@@ -1128,17 +1041,6 @@ const animate = () => {
   // <<< Priame renderovanie (bez composera) >>>
   renderer.render(scene, camera);
 };
-
-function positionGroundPlane() {
-  if (model && groundMesh) {
-       // Prepóčítame bounding box PO transformáciách
-        const box = new THREE.Box3().setFromObject(model);
-        if (!box.isEmpty()) {
-           groundMesh.position.y = box.min.y - 0.01; // Umiestniť tesne pod model
-            console.log(`Ground plane positioned at Y: ${groundMesh.position.y.toFixed(3)}`);
-        }
-  }
-}
 animate();
 
 setupPopupTabs();

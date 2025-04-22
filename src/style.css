@@ -918,7 +918,7 @@ body {
   }
 }
 
-/* Štýly pre popup zostávajú rovnaké ako predtým */
+/* Štýly pre popup */
 #about-popup {
   position: fixed;
   top: 0;
@@ -1047,15 +1047,15 @@ body {
     .popup-scrollable-content p, .popup-scrollable-content li { font-size: 0.9em; }
 }
 @media (max-width: 480px) {
-     .popup-content {
+    .popup-content {
         width: 95vw;
         height: 90vh;
         max-height: 90vh;
         border-radius: 6px;
     }
-     .popup-tabs { padding: 8px 15px 0 15px; }
-     .tab-button { padding: 8px 15px; font-size: 0.9em;}
-     .popup-scrollable-content { padding: 15px; }
+      .popup-tabs { padding: 8px 15px 0 15px; }
+      .tab-button { padding: 8px 15px; font-size: 0.9em;}
+      .popup-scrollable-content { padding: 15px; }
 }
 
 #mobile-message {
