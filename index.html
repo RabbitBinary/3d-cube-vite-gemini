@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KOCKA - Ovládací Panel v4</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- === Inline štýly pre Loader === -->
+    <style>
+        /* Základ pre skrytie FOUC */
+        body {
+            background-color: #444444; /* Farba pozadia loadera */
+            /* visibility: hidden; */ /* Alternatíva, ak nechceme farbu pozadia */
+        }
+        /* Štýly pre okamžité zobrazenie loadera */
+        #loading-overlay {
+            position: fixed;
+            inset: 0; /* Skratka pre top: 0; left: 0; right: 0; bottom: 0; */
+            width: 100%;
+            height: 100%;
+            background-color: #444444; /* Rovnaká farba ako body */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100; /* Nad ostatným obsahom */
+            opacity: 1; /* Viditeľný */
+            /* visibility: visible; */ /* Ak ste použili visibility na body */
+            /* Prechod pre skrytie zostane v externom CSS */
+        }
+        .loader-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 80%;
+            max-width: 450px;
+            text-align: center;
+            color: #e0e0e0; /* Základná farba textu pre loader */
+            font-family: "Poppins", sans-serif; /* Základný font */
+        }
+        #loader-image {
+            max-width: 250px;
+            height: auto;
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+        .progress-container { width: 100%; max-width: 400px; text-align: center; }
+        .progress-bar-bg { width: 100%; height: 8px; background-color: rgba(0, 0, 0, 0.2); border-radius: 4px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.3); }
+        #progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #cccccc, #ffffff); border-radius: 4px; /* Prechod bude v externom CSS */ }
+        #progress-text { margin-top: 15px; font-size: 0.9em; font-weight: 500; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+
+        /* Voliteľné: Skrytie zvyšku obsahu, kým sa JS nenačíta */
+        /* Ak loader nezaberá celú stránku, toto skryje ostatné elementy */
+         #webgl-canvas, #bottom-panel, #about-popup {
+            /* visibility: hidden; */ /* Skryje, ale zaberá miesto */
+             /* display: none; */ /* Odstráni z layoutu - opatrne */
+         }
+    </style>
+    <!-- === KONIEC: Inline štýly pre Loader === -->
+</head>
+<body>
+    <div id="loading-overlay">
+        <div class="loader-content">
+            <img src="/images/kocka-mapa.png" alt="Načítavam..." id="loader-image">
+            <div class="progress-container">
+                <div class="progress-bar-bg">
+                    <div id="progress-bar"></div>
+                </div>
+                <div id="progress-text">Načítam scénu...</div>
+            </div>
+        </div>
+    </div>
+    <canvas id="webgl-canvas"></canvas>
+    <div id="bottom-panel">
+        <div class="panel-column" id="column-selection-color">
+            
+            <div class="selection-controls">
+                <div class="environment-selector-container">
+                    <label for="environment-selector">Env.:</label>
+                    <select id="environment-selector">
+                        <option value="env1">Prostredie 1</option>
+                        <option value="env2">Prostredie 2</option>
+                        <option value="env3">Prostredie 3</option>
+                        <option value="env4">Prostredie 4</option>
+                    </select>
+                </div>
+                <div class="cube-selector-container">
+                    <label for="cube-selector">Cube:</label>
+                    <select id="cube-selector">
+                        <option value="">-- Select --</option>
+                    </select>
+                </div>
+            </div>
+            <div id="selected-cube-colors" class="controls-wrapper">
+                <p class="placeholder-text">Select cube</p>
+            </div>
+        </div>
+        <div class="panel-column" id="column-transforms">
+
+            <div id="selected-cube-transforms" class="controls-wrapper">
+                <p class="placeholder-text">Select cube</p>
+            </div>
+        </div>
+        <div class="panel-column" id="column-voice">
+            <div class="column-header">Voice control</div>
+            <div class="voice-controls">
+                <button id="mic-button" title="Spustiť/Zastaviť rozpoznávanie hlasu">🎙️</button>
+                <div class="voice-status-area">
+                    <span id="mic-status">Pripravený</span>
+                    <p id="transcript-output">Rozpoznaný text: ...</p>
+                </div>
+            </div>
+
+             <div class="language-selector-container">
+        <label for="language-selector">Jazyk:</label>
+        <select id="language-selector">
+            <option value="sk-SK" selected>Slovenčina</option>
+            <option value="en-US">English (US)</option>
+            <!-- Pridajte ďalšie jazyky podľa potreby -->
+        </select>
+    </div>
+    <p class="gemini-info">Analýza: Google Gemini ♊</p>
+
+        </div>
+        <div class="panel-column" id="column-info">
+
+            <div class="info-content-flex">
+                <img class="info-image" src="/images/kocka-mapa.png" alt="Mapa kociek" />
+                <div class="info-text-area">
+                    <p class="info-text">
+                        <b>FARBA:</b></br> Kocka 4 farba | Kocka 4 reset farby</br>
+                        <b>ROTÁCIA:</b></br> Kocka 4 x/y číslo | Kocka 4 reset rotácie</br>
+                        <b>MIERKA:</b></br> Kocka 4 mierka číslo | Kocka 4 reset mierky
+                    </p>
+                    <button id="about-button">O Projekte</button>
+                    <div class="footer-info">
+                        KOCKA © 2025 | vladimir.labat@gmail.com | v2.1
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="about-popup">
+        <div class="popup-content">
+            <button id="close-popup-button" title="Zatvoriť">×</button>
+            <h2>O Projekte KOCKA</h2>
+            <p>Tento projekt demonštruje interakciu s 3D modelom pomocou moderných webových technológií.</p>
+            <ul>
+                <li>Vykresľovanie pomocou <strong>Three.js</strong> a WebGL.</li>
+                <li>Dynamické prostredie načítané z <strong>HDRI</strong> máp.</li>
+                <li>Ovládanie farby, rotácie a mierky jednotlivých častí modelu.</li>
+                <li>Výber častí modelu kliknutím alebo cez menu.</li>
+                <li>Experimentálna podpora <strong>hlasového ovládania</strong> (vyžaduje Chrome/Edge a povolenie mikrofónu).</li>
+                <li>Spracovanie hlasu pomocou <strong>Google Gemini AI</strong> (cez backend).</li>
+            </ul>
+            <p>Vytvoril: Vladimir Labat (vladimir.labat@gmail.com)</p>
+            <p>Verzia: 0.3</p>
+            <!-- Môžete sem pridať ďalší obsah -->
+        </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
