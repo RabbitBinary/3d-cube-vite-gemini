@@ -1,4 +1,4 @@
-import './style.css';
+import "./style.css";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -257,7 +257,7 @@ const SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognition = null;
 let isListening = false;
-const BACKEND_URL = '/api/process-voice';
+const BACKEND_URL = "/api/process-voice";
 if (SpeechRecognition) {
   recognition = new SpeechRecognition();
   //recognition.lang = "sk-SK";
@@ -265,8 +265,8 @@ if (SpeechRecognition) {
   recognition.interimResults = false;
   recognition.onresult = async (event) => {
     const transcript = event.results[0][0].transcript.trim();
-    const currentLang = recognition.lang || languageSelector?.value || 'sk-SK';
-    console.log(`Rozpoznaný text (${currentLang}):`, transcript)
+    const currentLang = recognition.lang || languageSelector?.value || "sk-SK";
+    console.log(`Rozpoznaný text (${currentLang}):`, transcript);
     if (transcript) {
       console.log("Rozpoznaný text:", transcript);
       if (transcriptOutput)
@@ -324,10 +324,10 @@ if (SpeechRecognition) {
         if (languageSelector) {
           recognition.lang = languageSelector.value; // Získa hodnotu z HTML <select>
           console.log(`Starting recognition in ${recognition.lang}`);
-      } else {
-          recognition.lang = 'sk-SK'; // Fallback, ak selector neexistuje
+        } else {
+          recognition.lang = "sk-SK"; // Fallback, ak selector neexistuje
           console.warn("Language selector not found, defaulting to sk-SK");
-      }
+        }
         recognition.start();
         isListening = true;
         if (micButton) micButton.classList.add("listening");
@@ -365,6 +365,27 @@ if (SpeechRecognition) {
   if (micButton) micButton.disabled = true;
 }
 
+const voiceColorPalette = {
+  modrá: "#007bff",
+  oranžová: "#fd7e14",
+  fialová: "#6f42c1",
+  zelená: "#28a745",
+  ružová: "#e83e8c",
+  žltá: "#ffc107",
+  tyrkysová: "#20c997",
+  biela: "#ffffff",
+  červená: "#ff0000",
+  blue: "#007bff",
+  orange: "#fd7e14",
+  purple: "#6f42c1",
+  green: "#28a745",
+  pink: "#e83e8c",
+  yellow: "#ffc107",
+  teal: "#20c997",
+  white: "#ffffff",
+  red: "#ff0000",
+};
+
 // Funkcia na vykonanie príkazu z AI (s automatickým výberom UI a normalizáciou cieľa)
 function executeCommandFromAI(commandData) {
   // 1. Validácia základných dát
@@ -382,33 +403,43 @@ function executeCommandFromAI(commandData) {
   const originalTarget = target; // Uchováme pôvodný pre logovanie chýb
 
   // --- NOVÉ: Normalizácia cieľa (target) ---
-  if (target && typeof target === 'string') {
-      // Hľadáme vzor "Cube" nasledovaný číslom (^Cube(\d+)$)
-      // i - ignoruje veľkosť písmen (case-insensitive)
-      const match = target.match(/^Cube(\d+)$/i);
-      if (match && match[1]) { // Ak nájdeme zhodu a číslo
-          const number = parseInt(match[1], 10); // Prevedieme číslo na integer
-          if (!isNaN(number)) { // Skontrolujeme, či je to platné číslo
-              // Formátujeme číslo na dve miesta s úvodnou nulou (napr. 4 -> "04")
-              const formattedTarget = `Cube${number.toString().padStart(2, '0')}`;
-              // Logujeme zmenu pre kontrolu
-              console.log(`Normalizujem cieľ z "${originalTarget}" na "${formattedTarget}"`);
-              target = formattedTarget; // <<< Prepíšeme premennú target normalizovanou hodnotou
-          } else {
-               console.warn(`Nepodarilo sa parsovať číslo z cieľa: ${originalTarget}`);
-          }
+  if (target && typeof target === "string") {
+    // Hľadáme vzor "Cube" nasledovaný číslom (^Cube(\d+)$)
+    // i - ignoruje veľkosť písmen (case-insensitive)
+    const match = target.match(/^Cube(\d+)$/i);
+    if (match && match[1]) {
+      // Ak nájdeme zhodu a číslo
+      const number = parseInt(match[1], 10); // Prevedieme číslo na integer
+      if (!isNaN(number)) {
+        // Skontrolujeme, či je to platné číslo
+        // Formátujeme číslo na dve miesta s úvodnou nulou (napr. 4 -> "04")
+        const formattedTarget = `Cube${number.toString().padStart(2, "0")}`;
+        // Logujeme zmenu pre kontrolu
+        console.log(
+          `Normalizujem cieľ z "${originalTarget}" na "${formattedTarget}"`
+        );
+        target = formattedTarget; // <<< Prepíšeme premennú target normalizovanou hodnotou
       } else {
-           console.log(`Cieľ "${target}" nezodpovedá formátu "Cube[číslo]", normalizácia preskočená.`);
+        console.warn(`Nepodarilo sa parsovať číslo z cieľa: ${originalTarget}`);
       }
+    } else {
+      console.log(
+        `Cieľ "${target}" nezodpovedá formátu "Cube[číslo]", normalizácia preskočená.`
+      );
+    }
   }
   // --- KONIEC Normalizácie ---
 
   // 2. Validácia cieľa (teraz už s potenciálne normalizovaným 'target')
   // Kontrolujeme, či akcia vyžaduje cieľ a či tento cieľ existuje v našom modeli
-  const requiresTarget = !['unknown'].includes(action); // 'unknown' nepotrebuje cieľ
-  if (requiresTarget && (!target || !modelParts[target])) { // Používame už upravený 'target'
-    console.warn(`AI vrátila neznámy alebo neexistujúci cieľ: ${originalTarget} (normalizovaný: ${target}) pre akciu ${action}`);
-    if (micStatus) micStatus.textContent = `Neznáma časť: ${originalTarget || 'žiadna'}`; // Zobrazíme pôvodný
+  const requiresTarget = !["unknown"].includes(action); // 'unknown' nepotrebuje cieľ
+  if (requiresTarget && (!target || !modelParts[target])) {
+    // Používame už upravený 'target'
+    console.warn(
+      `AI vrátila neznámy alebo neexistujúci cieľ: ${originalTarget} (normalizovaný: ${target}) pre akciu ${action}`
+    );
+    if (micStatus)
+      micStatus.textContent = `Neznáma časť: ${originalTarget || "žiadna"}`; // Zobrazíme pôvodný
     setTimeout(() => {
       if (!isListening && micStatus) micStatus.textContent = "Pripravený";
     }, 1500);
@@ -417,7 +448,7 @@ function executeCommandFromAI(commandData) {
 
   // Logovanie príkazu (už s normalizovaným cieľom, ak prebehol)
   console.log(
-    `Vykonávam AI príkaz: Časť=${target || 'N/A'}, Akcia=${action}, Os=${
+    `Vykonávam AI príkaz: Časť=${target || "N/A"}, Akcia=${action}, Os=${
       axis || "N/A"
     }, Hodnota=${value !== undefined ? value : "N/A"}`
   );
@@ -431,15 +462,31 @@ function executeCommandFromAI(commandData) {
       cubeSelector.value = target; // Nastavíme hodnotu dropdownu
       displaySelectedCubeUI(target); // Zobrazíme UI pre danú časť
     } else {
-        console.warn(`Normalizovaný cieľ "${target}" sa nenachádza v dropdowne.`);
+      console.warn(`Normalizovaný cieľ "${target}" sa nenachádza v dropdowne.`);
     }
   }
 
   // 4. Vykonanie akcie na modeli
   switch (action) {
     case "setColor":
-      if (target && value !== undefined) updatePartColor(target, value);
-      else console.warn("Chýba cieľ alebo hodnota pre setColor");
+      if (target && value) {
+        // value je teraz názov farby (malými písmenami)
+        const hexColor = voiceColorPalette[value]; // Preklad na HEX
+        if (hexColor) {
+          console.log(`Prekladám "${value}" -> ${hexColor}. Aplikujem.`);
+          updatePartColor(target, hexColor); // Použijeme preložený HEX
+        } else {
+          // Toto by nemalo nastať, ak extrakcia funguje, ale pre istotu
+          console.warn(
+            `Názov farby "${value}" nenájdený v palete po extrakcii!`
+          );
+          if (micStatus) micStatus.textContent = `Neznáma farba: ${value}`;
+        }
+      } else if (!value) {
+        // Ak sa farba vôbec neextrahovala
+        if (micStatus) micStatus.textContent = "Akú farbu?";
+        console.warn(`Nebola extrahovaná hodnota farby pre ${target}`);
+      }
       break;
     case "resetColor":
       if (target) resetPartColor(target);
@@ -452,11 +499,12 @@ function executeCommandFromAI(commandData) {
       break;
     case "resetRotation":
       if (target) resetPartRotation(target);
-       else console.warn("Chýba cieľ pre resetRotation");
+      else console.warn("Chýba cieľ pre resetRotation");
       break;
     case "setScale":
       // Predpokladáme os 'z', ak nie je špecifikovaná inak alebo je neplatná
-      const scaleAxis = (axis === 'x' || axis === 'y' || axis === 'z') ? axis : 'z';
+      const scaleAxis =
+        axis === "x" || axis === "y" || axis === "z" ? axis : "z";
       if (target && value !== undefined)
         updatePartScale(target, scaleAxis, value);
       else console.warn("Chýba cieľ alebo hodnota pre setScale");
@@ -466,10 +514,10 @@ function executeCommandFromAI(commandData) {
       else console.warn("Chýba cieľ pre resetScale");
       break;
     case "unknown":
-       console.warn(`Backend nerozpoznal príkaz.`);
-       if (micStatus) micStatus.textContent = "Nerozumiem príkazu";
-       // Status sa resetne v onend
-       break;
+      console.warn(`Backend nerozpoznal príkaz.`);
+      if (micStatus) micStatus.textContent = "Nerozumiem príkazu";
+      // Status sa resetne v onend
+      break;
     default:
       console.warn(`Neznáma akcia prijatá z backendu alebo AI: "${action}"`);
       if (micStatus) micStatus.textContent = "Neznáma akcia";
@@ -619,15 +667,17 @@ function resetPartScale(partName) {
 // --- Funkcia pre animáciu - Pulzovanie v osi Z (pre Tween.js v18) ---
 function triggerPulseAnimation(mesh) {
   if (!mesh) {
-      console.warn("triggerPulseAnimation: mesh je null/undefined");
-      return;
+    console.warn("triggerPulseAnimation: mesh je null/undefined");
+    return;
   }
   const meshName = mesh.name;
   const initialScale = initialScales[meshName];
 
   if (!initialScale) {
-      console.warn(`Pulse animation skipped: Initial scale for '${meshName}' not found!`);
-      return;
+    console.warn(
+      `Pulse animation skipped: Initial scale for '${meshName}' not found!`
+    );
+    return;
   }
 
   console.log(`--- triggerPulseAnimation (Z-axis) called for: ${meshName} ---`);
@@ -643,42 +693,49 @@ function triggerPulseAnimation(mesh) {
   // --- ZMENA VÝPOČTU CIEĽOVÝCH ŠKÁL ---
   // Cieľová LOKÁLNA škála pre "stlačenie" v Z
   const shrinkTargetLocalScale = {
-      x: currentLocalScale.x,         // X zostáva nezmenené
-      y: currentLocalScale.y,         // Y zostáva nezmenené
-      z: currentLocalScale.z * zShrinkFactor // Meníme len Z
+    x: currentLocalScale.x, // X zostáva nezmenené
+    y: currentLocalScale.y, // Y zostáva nezmenené
+    z: currentLocalScale.z * zShrinkFactor, // Meníme len Z
   };
 
   // Cieľová LOKÁLNA škála pre návrat (na pôvodnú LOKÁLNU škálu)
   const returnTargetLocalScale = {
-      x: currentLocalScale.x,
-      y: currentLocalScale.y,
-      z: currentLocalScale.z
+    x: currentLocalScale.x,
+    y: currentLocalScale.y,
+    z: currentLocalScale.z,
   };
   // --- KONIEC ZMENY VÝPOČTU ---
 
-  console.log(`Target shrink local scale (Z-axis) [${meshName}]:`, shrinkTargetLocalScale);
-  console.log(`Target return local scale (Z-axis) [${meshName}]:`, returnTargetLocalScale);
-
+  console.log(
+    `Target shrink local scale (Z-axis) [${meshName}]:`,
+    shrinkTargetLocalScale
+  );
+  console.log(
+    `Target return local scale (Z-axis) [${meshName}]:`,
+    returnTargetLocalScale
+  );
 
   // Zastavenie predchádzajúcich tweenov pomocou TWEEN.remove()
   if (mesh.userData.pulseTweenShrink) {
-      TWEEN.remove(mesh.userData.pulseTweenShrink);
-      mesh.userData.pulseTweenShrink = null;
+    TWEEN.remove(mesh.userData.pulseTweenShrink);
+    mesh.userData.pulseTweenShrink = null;
   }
   if (mesh.userData.pulseTweenGrow) {
-      TWEEN.remove(mesh.userData.pulseTweenGrow);
-      mesh.userData.pulseTweenGrow = null;
+    TWEEN.remove(mesh.userData.pulseTweenGrow);
+    mesh.userData.pulseTweenGrow = null;
   }
 
   // Vytvorenie nových tweenov (stále animujeme celý mesh.scale objekt)
   const tweenShrink = new TWEEN.Tween(mesh.scale)
-      .to(shrinkTargetLocalScale, duration) // Cieľ je teraz len so zmeneným Z
-      .easing(TWEEN.Easing.Quadratic.Out);
+    .to(shrinkTargetLocalScale, duration) // Cieľ je teraz len so zmeneným Z
+    .easing(TWEEN.Easing.Quadratic.Out);
 
   const tweenGrow = new TWEEN.Tween(mesh.scale)
-      .to(returnTargetLocalScale, duration * 1.3) // Cieľ je teraz pôvodná lokálna škála
-      .easing(TWEEN.Easing.Elastic.Out)
-      .onComplete(() => { console.log(`--- Animation Complete [${meshName}] ---`); });
+    .to(returnTargetLocalScale, duration * 1.3) // Cieľ je teraz pôvodná lokálna škála
+    .easing(TWEEN.Easing.Elastic.Out)
+    .onComplete(() => {
+      console.log(`--- Animation Complete [${meshName}] ---`);
+    });
 
   tweenShrink.chain(tweenGrow);
 
@@ -988,23 +1045,25 @@ animate();
 
 if (aboutButton && aboutPopup && closePopupButton) {
   // Otvorenie popupu
-  aboutButton.addEventListener('click', () => {
-      aboutPopup.classList.add('visible');
+  aboutButton.addEventListener("click", () => {
+    aboutPopup.classList.add("visible");
   });
 
   // Zatvorenie tlačidlom X
-  closePopupButton.addEventListener('click', () => {
-      aboutPopup.classList.remove('visible');
+  closePopupButton.addEventListener("click", () => {
+    aboutPopup.classList.remove("visible");
   });
 
   // Zatvorenie kliknutím na pozadie (overlay)
-  aboutPopup.addEventListener('click', (event) => {
-      // Zatvorí sa len ak sa kliklo priamo na overlay, nie na obsah vnútri
-      if (event.target === aboutPopup) {
-          aboutPopup.classList.remove('visible');
-      }
+  aboutPopup.addEventListener("click", (event) => {
+    // Zatvorí sa len ak sa kliklo priamo na overlay, nie na obsah vnútri
+    if (event.target === aboutPopup) {
+      aboutPopup.classList.remove("visible");
+    }
   });
-   console.log("Event listenery pre About popup pridané."); // Kontrolný log
+  console.log("Event listenery pre About popup pridané."); // Kontrolný log
 } else {
-  console.warn("Chýbajú elementy pre About popup (#about-button, #about-popup, #close-popup-button). Neboli pridané listenery.");
+  console.warn(
+    "Chýbajú elementy pre About popup (#about-button, #about-popup, #close-popup-button). Neboli pridané listenery."
+  );
 }
