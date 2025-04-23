@@ -7,10 +7,55 @@ body {
   background-color: #212529;
 }
 
+.gemini-logo-inline {
+  height: 1.1em;
+  width: auto;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+#column-voice .gemini-info {
+  font-size: 0.8em;
+  color: #888;
+  text-align: center;
+  margin: 10px 0 0 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#column-voice .gemini-info b {
+  color: #aaa;
+  margin-left: 3px;
+}
+
+.h3-with-icon {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.h3-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.h3-with-icon h3 {
+  margin: 0;
+  padding: 0;
+  line-height: 1.3;
+  flex-grow: 1;
+  color: #f0f0f0;
+  font-size: 1.3em;
+  text-align: left;
+}
+
 #webgl-canvas {
   display: block;
   width: 100vw;
-  height: 100%; /* Ponechané %, aj keď vh je modernejšie */
+  height: 100%;
   position: fixed;
   top: 0;
   left: 0;
@@ -45,7 +90,6 @@ body {
 
 #loader-image {
   max-width: 250px;
-  /* max-height: auto; */ /* Zbytočné, height: auto; je default */
   height: auto;
   margin-bottom: 30px;
   opacity: 0.8;
@@ -99,14 +143,13 @@ body {
   gap: 8px;
   padding: 8px;
 
-  background-color: rgba(30, 33, 40, 0.85); /* Tmavé pozadie */
-  border: 1px solid rgba(255, 255, 255, 0.1); /* Jemný okraj */
+  background-color: rgba(30, 33, 40, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px; /* Zaoblené rohy */
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Tieň */
-
-  overflow-x: auto; /* <<< ZMENA: Povoliť horizontálne skrolovanie */
-  overflow-y: hidden; /* <<< ZMENA: Zakázať vertikálne skrolovanie */
-  height: auto; /* Výška podľa najvyššieho stĺpca */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: auto;
 
   /* Štýly pre scrollbar (horizontálny) */
   scrollbar-width: thin;
@@ -130,21 +173,21 @@ body {
 
 /* Stĺpce v paneli */
 .panel-column {
-  width: 280px; /* Fixná šírka stĺpca */
-  min-width: 260px; /* Minimálna šírka */
-  flex-shrink: 0; /* <<< ZMENA: Zabráni zmršťovaniu stĺpcov */
+  width: 280px;
+  min-width: 260px;
+  flex-shrink: 0;
   padding: 20px;
   background-color: rgba(40, 42, 54, 0.9);
   border-radius: 4px;
-  border: none; /* Odstránený pôvodný border-right */
+  border: none;
   display: flex;
   flex-direction: column;
   gap: 12px;
   height: auto;
 
   /* Vertikálne skrolovanie v rámci stĺpca, ak treba */
-  max-height: 250px; /* <<< PRIDANÉ: Nastavte maximálnu výšku stĺpca */
-  overflow-y: auto; /* <<< PRIDANÉ: Povoliť vertikálny scrollbar PRE STĹPEC */
+  max-height: 250px;
+  overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(150, 150, 150, 0.4) rgba(0, 0, 0, 0.1);
 }
@@ -161,7 +204,6 @@ body {
   border-radius: 10px;
 }
 
-/**/
 .column-header {
   font-size: 1em;
   font-weight: 600;
@@ -179,7 +221,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  flex-grow: 1; /* Vyplní miesto */
+  flex-grow: 1;
 }
 
 /* Špecifiká pre prvý stĺpec (Výber & Farba) */
@@ -189,12 +231,14 @@ body {
   gap: 10px;
   flex-shrink: 0;
 }
+
 #column-selection-color .environment-selector-container,
 #column-selection-color .cube-selector-container {
   display: flex;
   align-items: center;
   gap: 5px;
 }
+
 #column-selection-color label {
   font-weight: 600;
   color: #ccc;
@@ -206,6 +250,7 @@ body {
   flex-shrink: 0;
   align-self: center;
 }
+
 #column-selection-color select {
   flex-grow: 1;
   padding: 5px 8px;
@@ -225,6 +270,7 @@ body {
   background-position: right 8px center;
   padding-right: 25px;
 }
+
 #column-selection-color select:focus {
   border-color: #bd93f9;
 }
@@ -235,12 +281,14 @@ body {
   flex-direction: column;
   gap: 8px;
 }
+
 #selected-cube-colors .swatch-row {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 0;
-} /* Odstránené margin-bottom */
+}
+
 #selected-cube-colors .swatches-container {
   display: flex;
   flex-wrap: wrap;
@@ -249,7 +297,8 @@ body {
   justify-content: flex-start;
   margin-right: 0;
   padding: 0;
-} /* Odstránené padding/margin */
+}
+
 #selected-cube-colors .color-swatch {
   width: 15px;
   height: 22px;
@@ -258,17 +307,20 @@ body {
   cursor: pointer;
   transition: all 0.15s ease;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
-  position: relative; /* --- NOVÉ: Pre tooltip --- */
+  position: relative;
 }
+
 #selected-cube-colors .color-swatch:hover {
   transform: scale(1.1);
   border-color: rgba(255, 255, 255, 0.6);
 }
+
 #selected-cube-colors .color-swatch.active-swatch {
   border-color: #f8f8f2;
   transform: scale(1.1);
   box-shadow: 0 0 5px rgba(248, 248, 242, 0.5);
 }
+
 #selected-cube-colors .reset-button {
   background-color: #44475a;
   color: #f8f8f2;
@@ -286,6 +338,7 @@ body {
   align-items: center;
   justify-content: center;
 }
+
 #selected-cube-colors .reset-button:hover {
   background-color: #50546b;
   border-color: #6272a4;
@@ -316,14 +369,11 @@ body {
   opacity: 1;
   transition: opacity 0.2s ease-in-out;
 }
-/* --- KONIEC: Tooltip --- */
 
 /* === Špecifiká pre druhý stĺpec (Transformácie) - TLAČIDLÁ DOLE === */
 #selected-cube-transforms {
   flex-direction: column; /* Hlavné bloky pod sebou */
   gap: 15px;
-  /* Odstránime flex-grow, nech sa neťahá zbytočne */
-  /* flex-grow: 1; */
 }
 
 /* Sekcia so slidermi */
@@ -356,9 +406,10 @@ body {
   align-items: center;
   font-size: 0.9em;
   gap: 8px;
-  min-height: 20px; /* Dôležité pre vizuálne centrovanie thumbu */
-  padding: 4px 0; /* Pridáme trochu vertikálneho priestoru */
+  min-height: 20px;
+  padding: 4px 0;
 }
+
 .slider-row label {
   width: 65px;
   margin-right: 0;
@@ -367,6 +418,7 @@ body {
   white-space: nowrap;
   flex-shrink: 0;
 }
+
 .slider-row .value-display {
   min-width: 35px;
   text-align: right;
@@ -382,11 +434,10 @@ body {
 /* --- NOVÉ/UPRAVENÉ: Štýly pre input[type="range"] a la lil-gui --- */
 .slider-row input[type="range"] {
   flex-grow: 1;
-  height: 18px; /* Dráha zostáva tenká */
-  cursor: pointer;
+  height: 18px;
   margin: 0;
   appearance: none;
-  background: #333644; /* Tmavá dráha */
+  background: #333644;
   border-radius: 3px;
   outline: none;
   border: none;
@@ -399,38 +450,41 @@ body {
 /* Jazdec (Thumb) - Webkit (Chrome, Safari, Edge) - Vertikálny Obdĺžnik */
 .slider-row input[type="range"]::-webkit-slider-thumb {
   appearance: none;
-  width: 4px; /* <<< ZMENA: Úzky */
-  height: 18px; /* <<< ZMENA: Vyšší */
-  background: #f0f0f0; /* Svetlá farba */
-  border-radius: 2px; /* <<< ZMENA: Mierne zaoblené rohy, nie kruh */
+  width: 4px;
+  height: 18px;
+  background: #f0f0f0;
+  border-radius: 2px;
   cursor: pointer;
   border: none;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2); /* <<< ZMENA: Jemnejší tieň */
-  /* Vertikálne centrovanie thumbu na dráhe */
-  margin-top: -3px; /* (thumb_height / 2) - (track_height / 2) => (16/2)-(3/2) = 8-1.5 = 6.5 */
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  margin-top: -3px;
   transition: background-color 0.1s linear;
 }
+
 .slider-row input[type="range"]:hover::-webkit-slider-thumb {
   background: #ffffff;
 }
+
 .slider-row input[type="range"]:active::-webkit-slider-thumb {
   background: #dddddd;
 }
 
 /* Jazdec (Thumb) - Firefox - Vertikálny Obdĺžnik */
 .slider-row input[type="range"]::-moz-range-thumb {
-  width: 6px; /* <<< ZMENA: Úzky */
-  height: 18px; /* <<< ZMENA: Vyšší */
-  background: #f0f0f0; /* Svetlá farba */
-  border-radius: 2px; /* <<< ZMENA: Mierne zaoblené rohy */
+  width: 6px;
+  height: 18px;
+  background: #f0f0f0;
+  border-radius: 2px;
   cursor: pointer;
   border: none;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2); /* Jemnejší tieň */
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
   transition: background-color 0.1s linear;
 }
+
 .slider-row input[type="range"]:hover::-moz-range-thumb {
   background: #ffffff;
 }
+
 .slider-row input[type="range"]:active::-moz-range-thumb {
   background: #dddddd;
 }
@@ -449,9 +503,11 @@ body {
 .slider-row input[type="range"]:focus {
   outline: none;
 }
+
 .slider-row input[type="range"]:focus::-webkit-slider-thumb {
   box-shadow: 0 0 0 3px rgba(189, 147, 249, 0.3);
 }
+
 .slider-row input[type="range"]:focus::-moz-range-thumb {
   box-shadow: 0 0 0 3px rgba(189, 147, 249, 0.3);
 }
@@ -459,12 +515,13 @@ body {
 /* Sekcia s Reset tlačidlami (pod slidermi) */
 #selected-cube-transforms .reset-buttons-column {
   display: flex;
-  flex-direction: row; /* Tlačidlá vedľa seba */
+  flex-direction: row;
   justify-content: space-around;
   gap: 10px;
-  margin-top: 10px; /* Odsadenie zhora */
+  margin-top: 10px;
   width: 100%;
 }
+
 /* Tlačidlá Reset Rotácie / Mierky */
 #selected-cube-transforms .rotation-reset-button,
 #selected-cube-transforms .scale-reset-button {

@@ -66,7 +66,6 @@
         font-weight: 500;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
       }
-
     </style>
   </head>
   <body>
@@ -142,7 +141,16 @@
             <option value="en-US">English (US)</option>
           </select>
         </div>
-        <p class="gemini-info">Voice analysis: <b>Gemini AI ♊</b></p>
+        <div class="gemini-info">
+          <!-- Zmeníme <p> na <div> pre lepšie centrovanie -->
+          Voice analysis: <b>Gemini AI</b>
+          <img
+            src="/images/google-gemini-logo.png"
+            alt="Gemini Logo"
+            class="gemini-logo-inline"
+          />
+          <!-- <<< PRIDANÝ IMG TAG -->
+        </div>
       </div>
     </div>
     <div id="about-popup">
@@ -156,13 +164,13 @@
           <div class="popup-tab-content active" id="popup-content-sk-about">
             <!-- SK -->
             <h2>Kocka</h2>
-            <p style="text-align: justify;">
+            <p style="text-align: justify">
               Vitajte v interaktívnej demonštrácii KOCKA! Tento projekt ukazuje
               spojenie moderných webových technológií na vytvorenie pútavého 3D
               zážitku priamo vo vašom prehliadači.
             </p>
             <h3>Použité Technológie a Knižnice:</h3>
-            <p style="text-align: justify;">
+            <p style="text-align: justify">
               Jadrom aplikácie je knižnica Three.js využívajúca silu WebGL na
               vykreslenie detailného 3D modelu kocky. Realistický vzhľad
               skleneného materiálu je dosiahnutý pomocou fyzikálne založených
@@ -173,14 +181,21 @@
               ako pulzovanie kocky, zabezpečuje knižnica Tween.js.
             </p>
             <h3>Hlavné Funkcie:</h3>
-            <p style="text-align: justify;">
+            <p style="text-align: justify">
               Ovládací panel umožňuje detailnú kontrolu vybraných častí modelu,
               ktoré možno zvoliť kliknutím alebo cez menu. Môžete meniť farbu,
               rotáciu (X/Y) a mierku (Z). Dostupné sú rôzne prostredia (HDRI) a
               pohľad kamery je plne responzívny.
             </p>
-            <h3>♊ Experimentálne Hlasové Ovládanie:</h3>
-            <p style="text-align: justify;">
+            <div class="h3-with-icon">
+              <img
+                src="/images/google-gemini-logo.png"
+                alt="Gemini Logo"
+                class="h3-icon"
+              />
+              <h3>Experimentálne Hlasové Ovládanie</h3>
+            </div>
+            <p style="text-align: justify">
               Kľúčovou funkciou je hlasové ovládanie využívajúce Web Speech API
               prehliadača (Chrome/Edge) na rozpoznanie reči (SK/EN). Rozpoznaný
               text následne analyzuje umelá inteligencia
@@ -192,7 +207,7 @@
               style="border-color: rgba(255, 255, 255, 0.1); margin: 20px 0"
             />
             <p>
-              Vytvoril: Vladimir Labat (vladimir.labat@gmail.com)<br />
+              Vytvoril: Vladimír Labát © 2025<br />
               Verzia: 0.2 (Vite, Gemini AI Integration)
             </p>
             <!-- Koniec SK textu -->
@@ -201,13 +216,13 @@
           <div class="popup-tab-content" id="popup-content-en-about">
             <!-- EN -->
             <h2>Cube</h2>
-            <p style="text-align: justify;">
-              Welcome to the interactive demonstration KOCKA! This project
+            <p style="text-align: justify">
+              Welcome to the interactive demonstration CUBE! This project
               showcases the combination of modern web technologies to create an
               engaging 3D experience directly in your browser.
             </p>
             <h3>Technologies and Libraries Used:</h3>
-            <p style="text-align: justify;">
+            <p style="text-align: justify">
               The core of the application is the Three.js library utilizing the
               power of WebGL to render a detailed 3D cube model. The realistic
               appearance of the glass material is achieved using Physically
@@ -218,15 +233,22 @@
               like the cube pulsing, are handled by the Tween.js library.
             </p>
             <h3>Main Features:</h3>
-            <p style="text-align: justify;">
+            <p style="text-align: justify">
               The control panel allows detailed control over selected parts of
               the model, which can be chosen by clicking or via the panel menu.
               You can change the color, rotation (X/Y), and scale (Z). Various
               environments (HDRI) are available, and the camera view is fully
               responsive.
             </p>
-            <h3>♊ Experimental Voice Control:</h3>
-            <p style="text-align: justify;">
+            <div class="h3-with-icon">
+              <img
+                src="/images/google-gemini-logo.png"
+                alt="Gemini Logo"
+                class="h3-icon"
+              />
+              <h3>Experimental Voice Control</h3>
+            </div>
+            <p style="text-align: justify">
               A key feature is the voice control implementation using the
               browser's Web Speech API (Chrome/Edge) for speech recognition
               (SK/EN). The recognized text is then analyzed by the
@@ -239,7 +261,7 @@
               style="border-color: rgba(255, 255, 255, 0.1); margin: 20px 0"
             />
             <p>
-              Created by: Vladimir Labat (vladimir.labat@gmail.com)<br />
+              Created by: Vladimír Labát © 2025<br />
               Version: 0.2 (Vite, Gemini AI Integration)
             </p>
             <!-- Koniec EN textu -->
@@ -266,17 +288,19 @@
             <p><strong>Výber časti:</strong></p>
             <ul>
               <li>Kliknite myšou priamo na požadovanú časť 3D modelu.</li>
-              <li>
-                Vyberte časť z rozbaľovacieho menu "Časť:" v prvom stĺpci
-                panela.
-              </li>
+              <li>Alebo vyberte časť z rozbaľovacieho menu "Cube:"</li>
             </ul>
             <p><strong>Ovládací Panel:</strong></p>
             <ul>
               <li>
-                <strong>Výber & Farba:</strong> Tu meníte prostredie (HDRI) a
-                vyberáte časť. Následne môžete kliknúť na farebnú vzorku alebo
-                tlačidlo "Reset" pre farbu vybranej časti.
+                <strong>Nápoveda & Info:</strong>Zobrazuje nápovedu a informácie
+                o projekte.
+              </li>
+              <li>
+                <strong>Výber & Farba:</strong> Tu meníte prostredie -
+                enviroment (HDRI) a vyberáte časť - Cube. Následne môžete
+                kliknúť na farebnú vzorku alebo tlačidlo "Reset" pre farbu
+                vybranej časti.
               </li>
               <li>
                 <strong>Transformácie:</strong> Pomocou posuvníkov meníte
@@ -285,38 +309,25 @@
               </li>
               <li>
                 <strong>Hlasové Ovládanie:</strong> Stlačte tlačidlo mikrofónu
-                (🎙️) a povedzte príkaz. Pre fungovanie je potrebný podporovaný
+                (🎙️) a povedzte povel. Pre fungovanie je potrebný podporovaný
                 prehliadač (Chrome, Edge) a povolenie na použitie mikrofónu.
                 Môžete prepínať jazyk rozpoznávania (SK/EN).
-              </li>
-              <li>
-                <strong>Nápoveda & Info:</strong> Zobrazuje toto okno a
-                informácie o projekte.
               </li>
             </ul>
             <p><strong>Príklady Hlasových Príkazov (SK):</strong></p>
             <ul style="list-style-type: none; padding-left: 5px">
+              <li><code>kocka 2 oranžová</code></li>
               <li><code>kocka 4 farba modrá</code></li>
-              <li><code>zmen farbu kocky 1 na zelenú</code></li>
-              <li><code>kocka 7 reset farby</code></li>
-              <li><code>rotácia kocka 2 os x 45</code></li>
-              <li><code>otoč kocku 8 okolo y o -30</code></li>
-              <li><code>kocka 3 reset rotácie</code></li>
-              <li><code>mierka kocka 5 1.5</code></li>
-              <li><code>nastav veľkosť kocky 9 na 0.8</code></li>
-              <li><code>kocka 6 reset mierky</code></li>
-            </ul>
-            <p><strong>Príklady Hlasových Príkazov (EN):</strong></p>
-            <ul style="list-style-type: none; padding-left: 5px">
-              <li><code>cube 4 color blue</code></li>
-              <li><code>make cube 1 green</code></li>
-              <li><code>cube 7 reset color</code></li>
-              <li><code>rotate cube 2 x axis 45</code></li>
-              <li><code>turn cube 8 around y by -30</code></li>
-              <li><code>cube 3 reset rotation</code></li>
-              <li><code>scale cube 5 1.5</code></li>
-              <li><code>set size of cube 9 to 0.8</code></li>
-              <li><code>cube 6 reset scale</code></li>
+              <li><code>kocka 6 bude zelená</code></li>
+              <li><code>daj kocku 1 na zelenú</code></li>
+              <li><code>kocka 7 y 90</code></li>
+              <li><code>kocka 2 x 50</code></li>
+              <li><code>kocka 8 z 1.5</code></li>
+              <li><code>nastav mierku kocky 3 na 2</code></li>
+              <li><code>kocka 5 veľkosť 1.2</code></li>
+              <li><code>kocka 6 reset farby</code></li>
+              <li><code>kocka 9 reset mierky</code></li>
+              <li><code>kocka 7 reset rotácie</code></li>
             </ul>
           </div>
           <div class="popup-tab-content" id="popup-content-en-help">
@@ -325,16 +336,16 @@
             <p><strong>Selecting a Part:</strong></p>
             <ul>
               <li>
-                Click directly on the desired part of the 3D model with your
-                mouse.
+                Click the mouse directly on the desired part of the 3D model.
               </li>
-              <li>
-                Select the part from the "Part:" dropdown menu in the first
-                panel column.
-              </li>
+              <li>Or select a section from the "Cube:" drop-down menu.</li>
             </ul>
             <p><strong>Control Panel:</strong></p>
             <ul>
+              <li>
+                <strong>Help & Info:</strong>Displays help and information about
+                the project.
+              </li>
               <li>
                 <strong>Selection & Color:</strong> Change the environment
                 (HDRI) and select a part here. Then, you can click a color
@@ -352,34 +363,20 @@
                 microphone permission are required. You can switch the
                 recognition language (SK/EN).
               </li>
-              <li>
-                <strong>Help & Info:</strong> Displays this window and
-                information about the project.
-              </li>
             </ul>
             <p><strong>Voice Command Examples (EN):</strong></p>
             <ul style="list-style-type: none; padding-left: 5px">
+              <li><code>cube 7 green</code></li>
               <li><code>cube 4 color blue</code></li>
               <li><code>make cube 1 green</code></li>
-              <li><code>cube 7 reset color</code></li>
-              <li><code>rotate cube 2 x axis 45</code></li>
-              <li><code>turn cube 8 around y by -30</code></li>
-              <li><code>cube 3 reset rotation</code></li>
-              <li><code>scale cube 5 1.5</code></li>
-              <li><code>set size of cube 9 to 0.8</code></li>
-              <li><code>cube 6 reset scale</code></li>
-            </ul>
-            <p><strong>Voice Command Examples (SK):</strong></p>
-            <ul style="list-style-type: none; padding-left: 5px">
-              <li><code>kocka 4 farba modrá</code></li>
-              <li><code>zmen farbu kocky 1 na zelenú</code></li>
-              <li><code>kocka 7 reset farby</code></li>
-              <li><code>rotácia kocka 2 os x 45</code></li>
-              <li><code>otoč kocku 8 okolo y o -30</code></li>
-              <li><code>kocka 3 reset rotácie</code></li>
-              <li><code>mierka kocka 5 1.5</code></li>
-              <li><code>nastav veľkosť kocky 9 na 0.8</code></li>
-              <li><code>kocka 6 reset mierky</code></li>
+              <li><code>cube 7 y 90</code></li>
+              <li><code>cube 2 x 60</code></li>
+              <li><code>cube 5 z 2</code></li>
+              <li><code>set cube 3 scale 2</code></li>
+              <li><code>cube 5 size 1.5</code></li>
+              <li><code>cube 6 reset color</code></li>
+              <li><code>cube 9 reset scale</code></li>
+              <li><code>cube 7 reset rotation</code></li>
             </ul>
           </div>
         </div>

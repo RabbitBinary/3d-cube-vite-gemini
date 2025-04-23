@@ -31,21 +31,24 @@ export async function processTranscriptWithGemini(
       languageInstruction = "Process the following English command";
       examples = `
 Examples:
+"cube 07 green" -> {"action": "setColor", "target": "Cube07", "axis": null, "value": "green"}
 "cube 04 color blue" -> {"action": "setColor", "target": "Cube04", "axis": null, "value": "blue"}
 "make cube 01 green" -> {"action": "setColor", "target": "Cube01", "axis": null, "value": "green"}
-"rotate cube 07 y 90" -> {"action": "setRotation", "target": "Cube07", "axis": "y", "value": 90}
-"scale cube 08 1.5" -> {"action": "setScale", "target": "Cube08", "axis": "z", "value": 1.5}
+"cube 07 y 90" -> {"action": "setRotation", "target": "Cube07", "axis": "y", "value": 90}
+"cube 02 x 60" -> {"action": "setRotation", "target": "Cube02", "axis": "x", "value": 60}
+"cube 05 z 2" -> {"action": "setScale", "target": "Cube05", "axis": "z", "value": 2}
 "set cube 03 scale 2" -> {"action": "setScale", "target": "Cube03", "axis": "z", "value": 2}
-"cube 05 size 0.7" -> {"action": "setScale", "target": "Cube05", "axis": "z", "value": 0.7}
-"reset color for cube 06" -> {"action": "resetColor", "target": "Cube06", "axis": null, "value": null}
+"cube 05 size 1.5" -> {"action": "setScale", "target": "Cube05", "axis": "z", "value": 1.5}
+"cube 06 reset color" -> {"action": "resetColor", "target": "Cube06", "axis": null, "value": null}
 "cube 09 reset scale" -> {"action": "resetScale", "target": "Cube09", "axis": null, "value": null}
-"reset cube 07 rotation" -> {"action": "resetRotation", "target": "Cube07", "axis": null, "value": null}
+"cube 07 reset rotation" -> {"action": "resetRotation", "target": "Cube07", "axis": null, "value": null}
 `;
     } else {
       // Slovenčina
       languageInstruction = "Spracuj nasledujúci slovenský príkaz";
       examples = `
 Príklady:
+"kocka 02 oranžová" -> {"action": "setColor", "target": "Cube02", "axis": null, "value": "oranžová"}
 "kocka 04 farba modrá" -> {"action": "setColor", "target": "Cube04", "axis": null, "value": "modrá"}
 "kocka 06 bude zelená" -> {"action": "setColor", "target": "Cube06", "axis": null, "value": "zelená"}
 "daj kocku 01 na zelenú" -> {"action": "setColor", "target": "Cube01", "axis": null, "value": "zelená"}
@@ -53,7 +56,7 @@ Príklady:
 "kocka 02 x 50" -> {"action": "setRotation", "target": "Cube02", "axis": "x", "value": 50}
 "kocka 08 z 1.5" -> {"action": "setScale", "target": "Cube08", "axis": "z", "value": 1.5}
 "nastav mierku kocky 03 na 2" -> {"action": "setScale", "target": "Cube03", "axis": "z", "value": 2}
-"kocka 05 veľkosť 0.7" -> {"action": "setScale", "target": "Cube05", "axis": "z", "value": 0.7}
+"kocka 05 veľkosť 1.2" -> {"action": "setScale", "target": "Cube05", "axis": "z", "value": 1.2}
 "kocka 06 reset farby" -> {"action": "resetColor", "target": "Cube06", "axis": null, "value": null}
 "kocka 09 reset mierky" -> {"action": "resetScale", "target": "Cube09", "axis": null, "value": null}
 "kocka 07 reset rotácie" -> {"action": "resetRotation", "target": "Cube07", "axis": null, "value": null}

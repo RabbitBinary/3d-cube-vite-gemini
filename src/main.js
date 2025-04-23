@@ -9,7 +9,7 @@ import { initializePopups } from './ui/popups.js';
 const MOBILE_BREAKPOINT = 768;
 const DESKTOP_CAMERA_Z = 9;
 const MOBILE_CAMERA_Z = 12;
-const DESKTOP_MODEL_Y = 1.9;
+const DESKTOP_MODEL_Y = 2;
 const MOBILE_MODEL_Y = 3;
 let cameraTween = null; 
 let modelPositionTween = null;
@@ -34,6 +34,7 @@ const selectedCubeTransformsContainer = document.getElementById(
 );
 const environmentSelector = document.getElementById("environment-selector");
 const languageSelector = document.getElementById("language-selector");
+
 // Elementy pre popup
 const aboutButton = document.getElementById("about-button");
 const aboutPopup = document.getElementById("about-popup");
