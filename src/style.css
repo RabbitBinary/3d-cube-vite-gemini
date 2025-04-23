@@ -833,7 +833,7 @@ body {
     flex-direction: column;
     overflow-y: auto;
     overflow-x: hidden;
-    max-height: 40vh;
+    max-height: 30vh;
     left: 5px;
     right: 5px;
     bottom: 5px;

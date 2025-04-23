@@ -37,8 +37,6 @@ Examples:
 "scale cube 08 1.5" -> {"action": "setScale", "target": "Cube08", "axis": "z", "value": 1.5}
 "set cube 03 scale 2" -> {"action": "setScale", "target": "Cube03", "axis": "z", "value": 2}
 "cube 05 size 0.7" -> {"action": "setScale", "target": "Cube05", "axis": "z", "value": 0.7}
-"make cube 02 bigger" -> {"action": "setScale", "target": "Cube02", "axis": "z", "value": 1.2}
-"make cube 01 smaller" -> {"action": "setScale", "target": "Cube01", "axis": "z", "value": 0.8}
 "reset color for cube 06" -> {"action": "resetColor", "target": "Cube06", "axis": null, "value": null}
 "cube 09 reset scale" -> {"action": "resetScale", "target": "Cube09", "axis": null, "value": null}
 "reset cube 07 rotation" -> {"action": "resetRotation", "target": "Cube07", "axis": null, "value": null}
@@ -49,14 +47,14 @@ Examples:
       examples = `
 Príklady:
 "kocka 04 farba modrá" -> {"action": "setColor", "target": "Cube04", "axis": null, "value": "modrá"}
+"kocka 06 bude zelená" -> {"action": "setColor", "target": "Cube06", "axis": null, "value": "zelená"}
 "daj kocku 01 na zelenú" -> {"action": "setColor", "target": "Cube01", "axis": null, "value": "zelená"}
-"rotácia kocka 07 os y 90" -> {"action": "setRotation", "target": "Cube07", "axis": "y", "value": 90}
-"mierka kocka 08 na 1.5" -> {"action": "setScale", "target": "Cube08", "axis": "z", "value": 1.5}
+"kocka 07 y 90" -> {"action": "setRotation", "target": "Cube07", "axis": "y", "value": 90}
+"kocka 02 x 50" -> {"action": "setRotation", "target": "Cube02", "axis": "x", "value": 50}
+"kocka 08 z 1.5" -> {"action": "setScale", "target": "Cube08", "axis": "z", "value": 1.5}
 "nastav mierku kocky 03 na 2" -> {"action": "setScale", "target": "Cube03", "axis": "z", "value": 2}
 "kocka 05 veľkosť 0.7" -> {"action": "setScale", "target": "Cube05", "axis": "z", "value": 0.7}
-"zväčši kocku 02" -> {"action": "setScale", "target": "Cube02", "axis": "z", "value": 1.2}
-"zmenši kocku 01" -> {"action": "setScale", "target": "Cube01", "axis": "z", "value": 0.8}
-"reset farby pre kocku 06" -> {"action": "resetColor", "target": "Cube06", "axis": null, "value": null}
+"kocka 06 reset farby" -> {"action": "resetColor", "target": "Cube06", "axis": null, "value": null}
 "kocka 09 reset mierky" -> {"action": "resetScale", "target": "Cube09", "axis": null, "value": null}
 "kocka 07 reset rotácie" -> {"action": "resetRotation", "target": "Cube07", "axis": null, "value": null}
 `;

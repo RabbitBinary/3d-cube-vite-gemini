@@ -6,6 +6,14 @@ import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import TWEEN from "@tweenjs/tween.js";
 import { initializePopups } from './ui/popups.js';
 
+const MOBILE_BREAKPOINT = 768;
+const DESKTOP_CAMERA_Z = 9;
+const MOBILE_CAMERA_Z = 12;
+const DESKTOP_MODEL_Y = 1.9;
+const MOBILE_MODEL_Y = 3;
+let cameraTween = null; 
+let modelPositionTween = null;
+
 // --- Základné nastavenia ---
 const canvas = document.querySelector("#webgl-canvas");
 const scene = new THREE.Scene();
@@ -33,13 +41,11 @@ const closePopupButton = document.getElementById("close-popup-button");
 
 // --- Kamera ---
 const sizes = { width: window.innerWidth, height: window.innerHeight };
-const camera = new THREE.PerspectiveCamera(
-  75,
-  sizes.width / sizes.height,
-  0.1,
-  1000
-);
-camera.position.set(0, -3.3, 6);
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000);
+// <<< ZMENA: Nastavenie počiatočnej Z pozície podľa šírky okna >>>
+const initialZ = window.innerWidth <= MOBILE_BREAKPOINT ? MOBILE_CAMERA_Z : DESKTOP_CAMERA_Z;
+camera.position.set(0, 1.8, initialZ);
+console.log(`Initial camera Z position set to: ${initialZ}`);
 scene.add(camera);
 
 // --- Premenné ---
@@ -75,12 +81,13 @@ const customPartDisplayNames = {
 
 // --- Mapovanie prostredí ---
 const environmentMaps = {
-  Farma: "enviroment/belfast_farmhouse_4k.hdr",
-  Štúdio: "enviroment/belfast_sunset_4k.hdr",
-  Les: "enviroment/hilly_terrain_01_4k.hdr",
-  Interiér: "enviroment/rogland_clear_night_4k.hdr",
+  "Green Farm": "enviroment/belfast_farmhouse_4k.hdr",
+  "Autumn Landscape": "enviroment/belfast_sunset_4k.hdr",
+  "Sunny Meadow": "enviroment/hilly_terrain_01_4k.hdr",
+  "Starry Night": "enviroment/rogland_clear_night_4k.hdr",
+  "Urban Street": "enviroment/canary_wharf_4k.hdr",
 };
-const defaultEnvironmentKey = "Farma";
+const defaultEnvironmentKey = "Green Farm";
 let currentEnvironmentRotation = THREE.MathUtils.degToRad(180);
 
 // --- Premenné pre Loader ---
@@ -154,6 +161,34 @@ function applyGlassMaterial(targetModel, envMap) {
       child.renderOrder = 1;
     }
   });
+}
+
+// Funkcia na úpravu pozície kamery podľa šírky ---
+function adjustCameraPosition() {
+  const currentZ = camera.position.z;
+  const targetZ = window.innerWidth <= MOBILE_BREAKPOINT ? MOBILE_CAMERA_Z : DESKTOP_CAMERA_Z;
+
+  // Ak sa cieľ líši a animácia nebeží
+  if (Math.abs(currentZ - targetZ) > 0.1 && !cameraTween) {
+      console.log(`Adjusting camera Z from ${currentZ.toFixed(1)} to ${targetZ}`);
+
+      // Zastavíme akýkoľvek existujúci tween (pre istotu)
+      if (cameraTween) cameraTween.stop();
+
+      // Vytvoríme a spustíme nový tween
+      cameraTween = new TWEEN.Tween(camera.position)
+          .to({ z: targetZ }, 400) // Animujeme len Z súradnicu
+          .easing(TWEEN.Easing.Quadratic.Out)
+          .onComplete(() => {
+              cameraTween = null; // Vynulujeme po skončení
+              console.log(`Camera Z adjustment complete. Now at: ${camera.position.z.toFixed(1)}`);
+          })
+          .start(); // <<< Spustíme tween
+  } else if (Math.abs(currentZ - targetZ) <= 0.1 && cameraTween) {
+       // Ak sme už blízko cieľa a tween stále existuje, zastavíme ho
+      cameraTween.stop();
+      cameraTween = null;
+  }
 }
 
 // --- Funkcia na načítanie prostredia ---
@@ -402,7 +437,7 @@ function executeCommandFromAI(commandData) {
   let { action, target, axis, value } = commandData;
   const originalTarget = target; // Uchováme pôvodný pre logovanie chýb
 
-  // --- NOVÉ: Normalizácia cieľa (target) ---
+  // --- Normalizácia cieľa (target) ---
   if (target && typeof target === "string") {
     // Hľadáme vzor "Cube" nasledovaný číslom (^Cube(\d+)$)
     // i - ignoruje veľkosť písmen (case-insensitive)
@@ -560,6 +595,7 @@ function updatePartColor(partName, colorHex) {
     }
   }
 }
+
 function resetPartColor(partName) {
   const targetMesh = modelParts[partName];
   if (targetMesh && targetMesh.material) {
@@ -573,6 +609,7 @@ function resetPartColor(partName) {
     }
   }
 }
+
 function updatePartRotation(partName, axis, degrees) {
   const targetMesh = modelParts[partName];
   if (targetMesh && (axis === "x" || axis === "y")) {
@@ -592,6 +629,7 @@ function updatePartRotation(partName, axis, degrees) {
     }
   }
 }
+
 function resetPartRotation(partName) {
   const targetMesh = modelParts[partName];
   const initialRotation = initialRotations[partName];
@@ -621,6 +659,7 @@ function resetPartRotation(partName) {
     }
   }
 }
+
 function updatePartScale(partName, axis, scaleValue) {
   const targetMesh = modelParts[partName];
   if (targetMesh && (axis === "z" || axis === "scaleZ")) {
@@ -663,7 +702,6 @@ function resetPartScale(partName) {
   }
 }
 
-// --- Funkcia pre animáciu (OPRAVENÁ pre zachovanie aktuálnej mierky) ---
 // --- Funkcia pre animáciu - Pulzovanie v osi Z (pre Tween.js v18) ---
 function triggerPulseAnimation(mesh) {
   if (!mesh) {
@@ -953,9 +991,10 @@ loader.load(
       console.error("Chyba pri centrovaní/škálovaní:", e);
     }
     const finalPositionX = 0;
-    const finalPositionY = 2;
+    const initialModelY = window.innerWidth <= MOBILE_BREAKPOINT ? MOBILE_MODEL_Y : DESKTOP_MODEL_Y;
     const finalPositionZ = 2;
-    model.position.set(finalPositionX, finalPositionY, finalPositionZ);
+    model.position.set(finalPositionX, initialModelY, finalPositionZ);
+    console.log(`Initial model position set to: X=${finalPositionX}, Y=${initialModelY}, Z=${finalPositionZ}`);
     populateEnvironmentSelector();
     populateCubeSelectorAndSetupUI();
     isModelLoaded = true;
@@ -1022,25 +1061,66 @@ function onCanvasClick(event) {
   }
 }
 
-// --- Spracovanie zmeny veľkosti okna (BEZ Composera) ---
+// --- Spracovanie zmeny veľkosti okna (S Debounce a úpravou kamery aj modelu) ---
+let resizeTimeout;
 window.addEventListener("resize", () => {
-  sizes.width = window.innerWidth;
-  sizes.height = window.innerHeight;
-  camera.aspect = sizes.width / sizes.height;
-  camera.updateProjectionMatrix();
-  renderer.setSize(sizes.width, sizes.height);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        console.log("Window resized");
+        sizes.width = window.innerWidth;
+        sizes.height = window.innerHeight;
+
+        camera.aspect = sizes.width / sizes.height;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(sizes.width, sizes.height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // <<< ZAVOLÁME OBE FUNKCIE >>>
+        adjustCameraPosition();
+        adjustModelPosition();
+        // Po zmene pozície modelu by sa mala aktualizovať aj podlaha, ak ju máte
+        // positionGroundPlane(); // Môžeme volať aj tu, ale v onComplete tweenu je lepšie
+
+    }, 150); // Pauza
 });
+
+// --- Funkcia na úpravu Y pozície modelu podľa šírky ---
+function adjustModelPosition() {
+  if (!model) return; // Ak model ešte nie je načítaný
+
+  const currentY = model.position.y;
+  const targetY = window.innerWidth <= MOBILE_BREAKPOINT ? MOBILE_MODEL_Y : DESKTOP_MODEL_Y;
+
+  // Ak sa cieľ líši a nebeží už animácia modelu
+  if (Math.abs(currentY - targetY) > 0.05 && !modelPositionTween) { // Menšia tolerancia pre pozíciu
+      console.log(`Adjusting model Y from ${currentY.toFixed(1)} to ${targetY}`);
+
+      // Zastavíme starý tween, ak existuje
+      if (modelPositionTween) modelPositionTween.stop();
+
+      // Vytvoríme a spustíme nový tween pre model.position
+      modelPositionTween = new TWEEN.Tween(model.position)
+          .to({ y: targetY }, 400) // Animujeme len Y súradnicu
+          .easing(TWEEN.Easing.Quadratic.Out)
+          .onComplete(() => {
+              modelPositionTween = null;
+              console.log(`Model Y adjustment complete. Now at: ${model.position.y.toFixed(1)}`);
+          })
+          .start();
+  } else if (Math.abs(currentY - targetY) <= 0.05 && modelPositionTween) {
+      // Ak sme blízko a tween beží, zastavíme ho
+      modelPositionTween.stop();
+      modelPositionTween = null;
+  }
+}
 
 // --- Animačná slučka (UPRAVENÁ pre TWEEN) ---
 const animate = () => {
   requestAnimationFrame(animate);
-  // <<< Aktualizácia Tween.js >>>
   TWEEN.update();
   controls.update();
-  // <<< Priame renderovanie (bez composera) >>>
   renderer.render(scene, camera);
 };
 animate();
-
 initializePopups();
