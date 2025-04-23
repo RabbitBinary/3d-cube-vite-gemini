@@ -1183,8 +1183,8 @@ body {
 @media (max-width: 480px) {
   .popup-content {
     width: 95vw;
-    height: 90vh;
-    max-height: 90vh;
+    height: 80vh;
+    max-height: 80vh;
     border-radius: 6px;
   }
   .popup-tabs {
