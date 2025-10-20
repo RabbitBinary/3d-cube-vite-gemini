@@ -1,0 +1,1210 @@
+/* Základný reset a body */
+body {
+  margin: 0;
+  overflow: hidden;
+  color: white;
+  font-family: "Poppins", sans-serif;
+  background-color: #212529;
+}
+
+.gemini-logo-inline {
+  height: 1.1em;
+  width: auto;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+#column-voice .gemini-info {
+  font-size: 0.8em;
+  color: #888;
+  text-align: center;
+  margin: 10px 0 0 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#column-voice .gemini-info b {
+  color: #aaa;
+  margin-left: 3px;
+}
+
+.h3-with-icon {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.h3-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.h3-with-icon h3 {
+  margin: 0;
+  padding: 0;
+  line-height: 1.3;
+  flex-grow: 1;
+  color: #f0f0f0;
+  font-size: 1.3em;
+  text-align: left;
+}
+
+#webgl-canvas {
+  display: block;
+  width: 100vw;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* --- Štýly pre Loader --- */
+#loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #444444;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  opacity: 1;
+  transition: opacity 0.7s ease-out 0.2s;
+}
+
+.loader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 80%;
+  max-width: 450px;
+  text-align: center;
+}
+
+#loader-image {
+  max-width: 250px;
+  height: auto;
+  margin-bottom: 30px;
+  opacity: 0.8;
+}
+
+#loading-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.progress-container {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 8px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+#progress-bar {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #cccccc, #ffffff);
+  border-radius: 4px;
+  transition: width 0.2s linear;
+}
+
+#progress-text {
+  margin-top: 15px;
+  color: #e0e0e0;
+  font-size: 0.9em;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* === Spodný Ovládací Panel - Finálna Verzia === */
+#bottom-panel {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  z-index: 10;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  padding: 8px;
+
+  background-color: rgba(30, 33, 40, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px; /* Zaoblené rohy */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: auto;
+
+  /* Štýly pre scrollbar (horizontálny) */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(150, 150, 150, 0.6) rgba(0, 0, 0, 0.2);
+}
+#bottom-panel::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+#bottom-panel::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+#bottom-panel::-webkit-scrollbar-thumb {
+  background-color: rgba(150, 150, 150, 0.5);
+  border-radius: 4px;
+}
+#bottom-panel::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(180, 180, 180, 0.7);
+}
+
+/* Stĺpce v paneli */
+.panel-column {
+  width: 280px;
+  min-width: 260px;
+  flex-shrink: 0;
+  padding: 20px;
+  background-color: rgba(40, 42, 54, 0.9);
+  border-radius: 4px;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: auto;
+
+  /* Vertikálne skrolovanie v rámci stĺpca, ak treba */
+  max-height: 250px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(150, 150, 150, 0.4) rgba(0, 0, 0, 0.1);
+}
+/* Scrollbar pre stĺpec (Webkit) */
+.panel-column::-webkit-scrollbar {
+  width: 5px;
+}
+.panel-column::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+.panel-column::-webkit-scrollbar-thumb {
+  background-color: rgba(150, 150, 150, 0.4);
+  border-radius: 10px;
+}
+
+.column-header {
+  font-size: 1em;
+  font-weight: 600;
+  color: #bd93f9;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(189, 147, 249, 0.2);
+  text-align: left;
+  flex-shrink: 0;
+}
+
+/* Kontajnery s ovládacími prvkami - všeobecné */
+.controls-wrapper {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-grow: 1;
+}
+
+/* Špecifiká pre prvý stĺpec (Výber & Farba) */
+#column-selection-color .selection-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+#column-selection-color .environment-selector-container,
+#column-selection-color .cube-selector-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#column-selection-color label {
+  font-weight: 600;
+  color: #ccc;
+  font-size: 0.8em;
+  white-space: nowrap;
+  width: 75px;
+  text-align: left;
+  margin-right: 8px;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+#column-selection-color select {
+  flex-grow: 1;
+  padding: 5px 8px;
+  background-color: #333644;
+  color: #f8f8f2;
+  border: 1px solid #50546b;
+  border-radius: 3px;
+  font-size: 0.9em;
+  cursor: pointer;
+  outline: none;
+  min-width: 100px;
+  height: 28px;
+  box-sizing: border-box;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='5' viewBox='0 0 10 5'%3E%3Cpath fill='%23cccccc' d='M0 0l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 25px;
+}
+
+#column-selection-color select:focus {
+  border-color: #bd93f9;
+}
+
+#selected-cube-colors {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#selected-cube-colors .swatch-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0;
+}
+
+#selected-cube-colors .swatches-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  flex-grow: 1;
+  justify-content: flex-start;
+  margin-right: 0;
+  padding: 0;
+}
+
+#selected-cube-colors .color-swatch {
+  width: 15px;
+  height: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+#selected-cube-colors .color-swatch:hover {
+  transform: scale(1.1);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+#selected-cube-colors .color-swatch.active-swatch {
+  border-color: #f8f8f2;
+  transform: scale(1.1);
+  box-shadow: 0 0 5px rgba(248, 248, 242, 0.5);
+}
+
+#selected-cube-colors .reset-button {
+  background-color: #44475a;
+  color: #f8f8f2;
+  border: 1px solid #50546b;
+  border-radius: 3px;
+  padding: 4px 10px;
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+  text-align: center;
+  flex-shrink: 0;
+  height: 28px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#selected-cube-colors .reset-button:hover {
+  background-color: #50546b;
+  border-color: #6272a4;
+}
+
+/* --- NOVÉ: Tooltip pre Farebné Vzorky --- */
+#selected-cube-colors .color-swatch::after {
+  content: attr(data-color-name);
+  position: absolute;
+  bottom: 115%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2a2c37;
+  color: #eee;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8em;
+  white-space: nowrap;
+  z-index: 20;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out, visibility 0s linear 0.2s;
+  pointer-events: none;
+}
+#selected-cube-colors .color-swatch:hover::after {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* === Špecifiká pre druhý stĺpec (Transformácie) - TLAČIDLÁ DOLE === */
+#selected-cube-transforms {
+  flex-direction: column; /* Hlavné bloky pod sebou */
+  gap: 15px;
+}
+
+/* Sekcia so slidermi */
+#selected-cube-transforms .slider-controls-column {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Titulky Rotácia / Mierka */
+#selected-cube-transforms .control-title {
+  font-size: 0.8em;
+  font-weight: 600;
+  color: #ccc;
+  margin: 0;
+}
+
+/* Kontajner pre skupiny sliderov */
+#selected-cube-transforms .slider-container {
+  margin-bottom: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Riadok slidera (label, slider, hodnota) */
+.slider-row {
+  display: flex;
+  align-items: center;
+  font-size: 0.9em;
+  gap: 8px;
+  min-height: 20px;
+  padding: 4px 0;
+}
+
+.slider-row label {
+  width: 65px;
+  margin-right: 0;
+  color: #ccc;
+  font-size: 0.95em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.slider-row .value-display {
+  min-width: 35px;
+  text-align: right;
+  color: #eee;
+  font-family: monospace, monospace;
+  font-size: 0.9em;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 1px 4px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* --- NOVÉ/UPRAVENÉ: Štýly pre input[type="range"] a la lil-gui --- */
+.slider-row input[type="range"] {
+  flex-grow: 1;
+  height: 18px;
+  margin: 0;
+  appearance: none;
+  background: #333644;
+  border-radius: 3px;
+  outline: none;
+  border: none;
+  min-width: 50px;
+  padding: 0;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+
+/* Jazdec (Thumb) - Webkit (Chrome, Safari, Edge) - Vertikálny Obdĺžnik */
+.slider-row input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 4px;
+  height: 18px;
+  background: #f0f0f0;
+  border-radius: 2px;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  margin-top: -3px;
+  transition: background-color 0.1s linear;
+}
+
+.slider-row input[type="range"]:hover::-webkit-slider-thumb {
+  background: #ffffff;
+}
+
+.slider-row input[type="range"]:active::-webkit-slider-thumb {
+  background: #dddddd;
+}
+
+/* Jazdec (Thumb) - Firefox - Vertikálny Obdĺžnik */
+.slider-row input[type="range"]::-moz-range-thumb {
+  width: 6px;
+  height: 18px;
+  background: #f0f0f0;
+  border-radius: 2px;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.1s linear;
+}
+
+.slider-row input[type="range"]:hover::-moz-range-thumb {
+  background: #ffffff;
+}
+
+.slider-row input[type="range"]:active::-moz-range-thumb {
+  background: #dddddd;
+}
+
+/* Dráha (Track) - Firefox - Zostáva rovnaká */
+.slider-row input[type="range"]::-moz-range-track {
+  width: 100%;
+  height: 3px;
+  cursor: pointer;
+  background: #333644;
+  border-radius: 3px;
+  border: none;
+}
+
+/* Focus štýl - Môže zostať rovnaký */
+.slider-row input[type="range"]:focus {
+  outline: none;
+}
+
+.slider-row input[type="range"]:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px rgba(189, 147, 249, 0.3);
+}
+
+.slider-row input[type="range"]:focus::-moz-range-thumb {
+  box-shadow: 0 0 0 3px rgba(189, 147, 249, 0.3);
+}
+
+/* Sekcia s Reset tlačidlami (pod slidermi) */
+#selected-cube-transforms .reset-buttons-column {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  gap: 10px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+/* Tlačidlá Reset Rotácie / Mierky */
+#selected-cube-transforms .rotation-reset-button,
+#selected-cube-transforms .scale-reset-button {
+  flex-grow: 1;
+  flex-basis: 0;
+  margin: 0;
+  background-color: #44475a;
+  color: #f8f8f2;
+  border: 1px solid #50546b;
+  border-radius: 3px;
+  padding: 5px 8px;
+  font-size: 0.8em;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.2s ease;
+  height: 28px;
+  box-sizing: border-box;
+}
+#selected-cube-transforms .rotation-reset-button:hover,
+#selected-cube-transforms .scale-reset-button:hover {
+  background-color: #50546b;
+}
+
+/* === Špecifiká pre tretí stĺpec (Hlas) s Neónovým Tlačidlom === */
+#column-voice .voice-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Zväčšíme medzeru kvôli žiare tlačidla */
+  padding: 5px 0 15px; /* Upravený padding dole */
+  /* border-bottom: 1px solid rgba(189, 147, 249, 0.2); */ /* Odstránime border, ak už nie je potrebný */
+}
+
+/* === NOVÉ/UPRAVENÉ: Neónový Efekt pre Mikrofón === */
+#column-voice #mic-button {
+  /* --- Základné rozmery a layout (mierne upravené) --- */
+  color: #f0f0f0; /* Svetlejšia ikona */
+  border-radius: 50%;
+  width: 38px; /* Väčšie tlačidlo */
+  height: 38px;
+  padding: 0;
+  font-size: 1.5em; /* Väčšia ikona */
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative; /* Pre pseudo-element */
+  overflow: hidden; /* Skryje prečnievajúci okraj */
+
+  /* --- Neónové farby a prechody --- */
+  background-color: #4d007a; /* Tmavá fialová */
+  border: 1px solid #8a4fff; /* Svetlejší fialový okraj */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease,
+    border-color 0.3s ease, transform 0.2s ease;
+
+  /* --- NEÓNOVÁ ŽIARA (box-shadow) --- */
+  box-shadow: 0 0 5px #a87fff, 0 0 10px #a87fff, 0 0 15px #8a4fff,
+    0 0 25px #6a1fff;
+}
+
+/* --- Efekt pri Hover --- */
+#column-voice #mic-button:hover {
+  background-color: #6a1fff; /* Svetlejšia fialová */
+  border-color: #c4a7ff;
+  box-shadow: 0 0 7px #c4a7ff, 0 0 15px #c4a7ff, 0 0 25px #a87fff,
+    0 0 40px #8a4fff; /* Intenzívnejšia žiara */
+  transform: scale(1.05);
+}
+
+/* --- Štýl pri Nahrávaní (Listening) --- */
+#column-voice #mic-button.listening {
+  background-color: #ff4040; /* Jasná červená */
+  border-color: #ff7070;
+  /* Červená žiara a animácia */
+  box-shadow: 0 0 8px #ff7070, 0 0 16px #ff7070, 0 0 25px #ff4040,
+    0 0 40px #d40000;
+  animation: pulse-red 1.5s infinite ease-in-out;
+}
+
+/* --- Voliteľné: Animácia Pulzovania Žiary (pre stav listening) --- */
+@keyframes pulse-red {
+  0% {
+    box-shadow: 0 0 8px #ff7070, 0 0 16px #ff7070, 0 0 25px #ff4040,
+      0 0 40px #d40000;
+  }
+  50% {
+    box-shadow: 0 0 12px #ff8a8a, 0 0 24px #ff8a8a, 0 0 35px #ff5555,
+      0 0 55px #e00000;
+  }
+  100% {
+    box-shadow: 0 0 8px #ff7070, 0 0 16px #ff7070, 0 0 25px #ff4040,
+      0 0 40px #d40000;
+  }
+}
+
+/* --- Voliteľné: Dodatočný "elektrický" okraj --- */
+#column-voice #mic-button::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 2px solid #e0cfff; /* Veľmi svetlá fialová */
+  border-radius: 50%;
+  opacity: 0.6;
+  z-index: -1;
+  transition: opacity 0.3s ease, border-color 0.3s ease; /* Pridaný prechod pre border-color */
+}
+#column-voice #mic-button:hover::before {
+  opacity: 0.9;
+}
+#column-voice #mic-button.listening::before {
+  border-color: #ffabab; /* Svetlo červená */
+  opacity: 0.8;
+}
+
+/* --- Zvyšok štýlov pre voice stĺpec (zostáva rovnaký) --- */
+#column-voice .voice-status-area {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-grow: 1;
+  min-width: 100px;
+  text-align: left;
+  overflow: hidden;
+}
+#column-voice #mic-status {
+  font-weight: 500;
+  font-size: 0.9em;
+  color: #f8f8f2;
+  white-space: nowrap;
+}
+#column-voice #transcript-output {
+  margin: 0;
+  color: #888;
+  font-size: 0.8em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+#column-voice .language-selector-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+#column-voice .language-selector-container label {
+  font-weight: 500;
+  color: #ccc;
+  font-size: 0.9em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+#column-voice .language-selector-container select {
+  flex-grow: 1;
+  padding: 4px 6px;
+  background-color: #333644;
+  color: #f8f8f2;
+  border: 1px solid #50546b;
+  border-radius: 3px;
+  font-size: 0.85em;
+  cursor: pointer;
+  outline: none;
+  height: 26px;
+  box-sizing: border-box;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='5' viewBox='0 0 10 5'%3E%3Cpath fill='%23cccccc' d='M0 0l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  padding-right: 20px;
+}
+#column-voice .language-selector-container select:focus {
+  border-color: #bd93f9;
+}
+
+#column-voice .gemini-info {
+  font-size: 0.9em; /* Upravená veľkosť */
+  color: #888;
+  text-align: center;
+  margin: 10px 0 5px 0; /* Upravený margin */
+  padding: 0;
+}
+
+/* Špecifiká pre štvrtý stĺpec (Info) */
+#column-info .info-content-flex {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+}
+#column-info .info-image {
+  display: none;
+}
+#column-info .info-text-area {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  font-size: 0.85em;
+  width: 100%;
+}
+#column-info .info-text {
+  color: #aaa;
+  line-height: 1.5;
+  margin: 0;
+  font-size: 0.9em;
+}
+#column-info .info-text b {
+  color: #bd93f9;
+  font-weight: 600;
+}
+#column-info .info-buttons-container {
+  display: flex; /* Tlačidlá vedľa seba */
+  gap: 8px; /* Medzera medzi tlačidlami */
+  width: 100%;
+}
+
+/* Spoločný štýl pre obe tlačidlá */
+#column-info .info-buttons-container {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+#column-info .info-buttons-container button {
+  flex-grow: 1; /* Stále sa roztiahnu */
+  flex-basis: 0;
+  margin: 0;
+
+  /* --- Štýly skopírované/prispôsobené z .reset-button --- */
+  background-color: #44475a; /* Tmavšia modro-šedá */
+  color: #f8f8f2;
+  border: 1px solid #50546b;
+  border-radius: 3px;
+  padding: 4px 10px; /* Rovnaký padding ako reset */
+  font-size: 0.85em; /* Rovnaká veľkosť písma */
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+  text-align: center;
+  height: 28px; /* Rovnaká výška */
+  box-sizing: border-box;
+  display: inline-flex; /* Aby sa text centroval */
+  align-items: center;
+  justify-content: center;
+  /* Odstránené position, overflow, box-shadow */
+}
+
+#column-info .info-buttons-container button:hover {
+  background-color: #50546b; /* Rovnaký hover ako reset */
+  border-color: #6272a4;
+  /* Odstránený transform a špecifický color */
+  /* transform: scale(1.03); */
+  /* color: #ffffff; */
+}
+
+#column-info .footer-info {
+  font-size: 0.8em;
+  color: #888;
+  text-align: left;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+}
+#column-info .footer-info p {
+  margin: 0;
+}
+
+/* Placeholder text */
+.placeholder-text {
+  color: #666;
+  text-align: center;
+  margin: 15px auto;
+  font-style: italic;
+  font-size: 0.9em;
+  padding: 10px;
+}
+
+/* --- Responzivita --- */
+/* Zachováva stĺpce vedľa seba, len upravuje ich šírku a vnútorné prvky */
+@media (max-width: 1100px) {
+  .panel-column {
+    width: 240px;
+    min-width: 220px;
+  }
+}
+
+@media (max-width: 900px) {
+  .panel-column {
+    width: 220px;
+    min-width: 200px;
+    padding: 8px;
+    gap: 10px;
+  }
+  #column-selection-color label {
+    width: 65px;
+    font-size: 0.85em;
+  }
+  #column-selection-color select {
+    font-size: 0.85em;
+    height: 26px;
+  }
+  #selected-cube-colors .color-swatch {
+    width: 20px;
+    height: 20px;
+  }
+  .slider-row label {
+    width: 60px;
+    font-size: 0.85em;
+  }
+  .slider-row .value-display {
+    min-width: 30px;
+    font-size: 0.85em;
+  }
+  .reset-button,
+  #about-button,
+  #selected-cube-transforms .rotation-reset-button,
+  #selected-cube-transforms .scale-reset-button {
+    font-size: 0.8em;
+    padding: 3px 8px;
+    height: 26px;
+  }
+  #column-voice #mic-button {
+    width: 30px;
+    height: 30px;
+    font-size: 1.2em;
+  }
+}
+
+@media (max-width: 700px) {
+  .panel-column {
+    width: 200px;
+    min-width: 180px;
+  }
+  #column-selection-color label {
+    width: 55px;
+  }
+  .slider-row label {
+    width: 50px;
+  }
+  #selected-cube-colors .color-swatch {
+    width: 18px;
+    height: 18px;
+  }
+  #column-info .info-text,
+  #column-info .footer-info {
+    font-size: 0.75em;
+  }
+  #column-voice #mic-status {
+    font-size: 0.85em;
+  }
+  #column-voice #transcript-output {
+    font-size: 0.75em;
+  }
+}
+
+/* --- Responzivita --- */
+
+/* Pre tablety a menšie (<= 992px) - stĺpce pod sebou */
+@media (max-width: 992px) {
+  #bottom-panel {
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 30vh;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    width: auto;
+  }
+  .panel-column {
+    width: auto;
+    min-width: unset;
+    flex-shrink: 1;
+    max-height: none;
+    overflow-y: visible;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 40px;
+  }
+  .panel-column:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  #selected-cube-transforms {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #selected-cube-transforms .reset-buttons-column {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-top: 15px;
+  }
+  #selected-cube-transforms .rotation-reset-button,
+  #selected-cube-transforms .scale-reset-button {
+    flex-grow: 0;
+    width: 100%;
+  }
+
+  #column-info .info-text-area {
+    text-align: left;
+  }
+
+  #column-selection-color select {
+    margin-left: 40px;
+  }
+}
+
+/* Pre malé mobily (<= 600px) - ďalšie úpravy veľkostí */
+@media (max-width: 600px) {
+  #bottom-panel {
+    max-height: 35vh;
+  } /* Ešte upravíme výšku */
+  .panel-column {
+    padding: 20px;
+    gap: 10px;
+  }
+  .column-header {
+    font-size: 0.95em;
+    margin-bottom: 5px;
+  }
+  #column-selection-color label {
+    width: 60px;
+    font-size: 0.85em;
+  }
+  #column-selection-color select {
+    font-size: 0.85em;
+    height: 26px;
+    margin-left: 40px;
+  }
+  #selected-cube-colors .color-swatch {
+    width: 20px;
+    height: 20px;
+    gap: 8px;
+  }
+  .slider-row label {
+    width: 60px;
+    font-size: 0.85em;
+  }
+  .slider-row input[type="range"] {
+    min-width: 40px;
+  }
+  .slider-row .value-display {
+    min-width: 30px;
+    font-size: 0.85em;
+  }
+  #selected-cube-transforms .rotation-reset-button,
+  #selected-cube-transforms .scale-reset-button {
+    font-size: 0.8em;
+    padding: 4px 8px;
+  } /* Trochu väčšie tlačidlá */
+  #column-info .info-text,
+  #column-info .footer-info {
+    font-size: 0.8em;
+  }
+  #column-voice #mic-button {
+    width: 36px;
+    height: 36px;
+    font-size: 1.4em;
+  }
+  .reset-button,
+  #about-button {
+    font-size: 0.8em;
+    padding: 3px 8px;
+    height: 26px;
+  }
+}
+
+/* Štýly pre popup */
+#about-popup,
+#help-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  padding: 20px;
+  box-sizing: border-box;
+}
+#about-popup.visible,
+#help-popup.visible {
+  display: flex;
+  opacity: 1;
+}
+
+/* Hlavný kontajner obsahu popupu */
+.popup-content {
+  background: linear-gradient(145deg, #3a3c50, #282a36);
+  width: 90vw; /* Pevná/responzívna šírka */
+  max-width: 750px;
+  height: 80vh; /* Pevná/responzívna výška */
+  max-height: 650px;
+  padding: 0; /* Padding bude na vnútorných elementoch */
+  border-radius: 10px;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6);
+  color: #f0f0f0;
+  display: flex;
+  flex-direction: column; /* Záložky hore, obsah dole */
+  overflow: hidden; /* Overflow rieši vnútorný scrollable */
+}
+
+/* Tlačidlo Zatvoriť (spoločné pre oba popupy) */
+.close-popup-button {
+  position: absolute;
+  top: 12px;
+  right: 15px; /* Mierne posunuté */
+  background: transparent;
+  border: none;
+  color: #aaa;
+  font-size: 2em; /* Trochu menšie */
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 5px;
+  transition: color 0.2s ease;
+  z-index: 10; /* Nad záložkami */
+}
+.close-popup-button:hover {
+  color: #fff;
+}
+
+/* Kontajner pre záložky */
+.popup-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 40px 0 40px; /* Upravený padding */
+  flex-shrink: 0; /* Nezmrští sa */
+  position: relative; /* Aby boli tlačidlá nad borderom */
+}
+
+/* Tlačidlá záložiek */
+.tab-button {
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #aaa;
+  font-size: 0.95em; /* Trochu menšie */
+  font-weight: 500;
+  margin-bottom: -1px; /* Prekryje border kontajnera */
+  transition: color 0.2s ease, border-bottom-color 0.2s ease;
+  outline: none; /* Odstráni focus outline */
+}
+.tab-button:hover {
+  color: #eee;
+}
+.tab-button.active {
+  color: #bd93f9;
+  border-bottom-color: #bd93f9;
+}
+
+/* Skrolovateľný obsah */
+.popup-scrollable-content {
+  flex-grow: 1; /* Zaberie zvyšok výšky */
+  overflow-y: auto; /* Skrolovanie obsahu */
+  padding: 25px 40px; /* Vnútorný padding */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(150, 150, 150, 0.6) rgba(0, 0, 0, 0.2);
+}
+.popup-scrollable-content::-webkit-scrollbar {
+  width: 6px;
+}
+.popup-scrollable-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+.popup-scrollable-content::-webkit-scrollbar-thumb {
+  background-color: rgba(150, 150, 150, 0.6);
+  border-radius: 3px;
+}
+.popup-scrollable-content::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(180, 180, 180, 0.8);
+}
+
+/* Obsah konkrétnej záložky */
+.popup-tab-content {
+  display: none; /* Skrytý defaultne */
+}
+.popup-tab-content.active {
+  display: block; /* Zobrazí sa aktívny */
+}
+
+/* Štýly pre text vnútri popupu */
+.popup-scrollable-content h2 {
+  margin-top: 0;
+  color: #bd93f9;
+  text-align: center;
+  margin-bottom: 25px;
+}
+.popup-scrollable-content p {
+  line-height: 1.7;
+  margin-bottom: 15px;
+  font-size: 0.95em;
+}
+.popup-scrollable-content ul {
+  list-style: disc;
+  margin-left: 20px;
+  margin-bottom: 20px;
+  padding-left: 15px;
+}
+.popup-scrollable-content li {
+  margin-bottom: 8px;
+}
+.popup-scrollable-content strong {
+  color: #8be9fd;
+}
+.popup-scrollable-content code {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 0.9em;
+  color: #f1fa8c;
+}
+.popup-scrollable-content hr {
+  border-color: rgba(255, 255, 255, 0.1);
+  margin: 20px 0;
+  border-style: solid;
+  border-width: 1px 0 0 0;
+}
+
+/* --- Responzivita pre Popup --- */
+@media (max-width: 768px) {
+  .popup-content {
+    width: 95vw;
+    height: 85vh;
+    max-height: 90vh;
+  }
+  .popup-tabs {
+    padding: 10px 20px 0 20px;
+  }
+  .popup-scrollable-content {
+    padding: 20px;
+  }
+  .popup-scrollable-content h2 {
+    font-size: 1.4em;
+  }
+  .popup-scrollable-content p,
+  .popup-scrollable-content li {
+    font-size: 16px;
+  }
+}
+@media (max-width: 480px) {
+  .popup-content {
+    width: 95vw;
+    height: 80vh;
+    max-height: 80vh;
+    border-radius: 6px;
+  }
+  .popup-tabs {
+    padding: 8px 15px 0 15px;
+  }
+  .tab-button {
+    padding: 8px 15px;
+    font-size: 0.9em;
+  }
+  .popup-scrollable-content {
+    padding: 20px;
+  }
+  .popup-scrollable-content h2 {
+    font-size: 1.3em;
+  }
+  .popup-scrollable-content p,
+  .popup-scrollable-content li {
+    font-size: 14px;
+  }
+}
+#mobile-message {
+  display: none; /* Predvolene skryté */
+}
